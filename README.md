@@ -26,3 +26,16 @@ git push -f
 ```
 + 合并另一个版本  
 `git merge bb28e5c3c02d64d26e88b3969466139a76755cf0 --allow-unrelated-histories`  
+### git lfs 大文件存储
++ 查看 lfs 版本  
+`git lfs -v`  
++ 开启 lfs 功能  
+`git lfs install`  
++ 大文件追踪  
+`git fls track *.uasset`  
++ 查看当前追踪模式  
+`git lfs track`  
++ 查看当前追踪文件列表,在提交后可使用  
+`git lfs ls-files`  
+  
+貌似提交需要手动输入账号密码  
