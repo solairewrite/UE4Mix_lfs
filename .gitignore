@@ -81,18 +81,6 @@ DerivedDataCache/*
 # 打包发布的项目,默认文件夹
 WindowsNoEditor/
 
-# 字体
-Content/Fonts/*
-
 # 虚幻商城安装包
-# Content/AnimalVarietyPack/*
-# Content/FXVarietyPack/*
-# Content/IceCool/*
-# Content/InfinityBladeWeapons/*
-# Content/ParagonShinbi/*
-
 Content/*
 !Content/_MyProjects/
-
-# *.uasset
-# *.umap
