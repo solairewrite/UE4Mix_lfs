@@ -24,6 +24,8 @@ UE4开发技能合集
 git reset bb28e5c3c02d64d26e88b3969466139a76755cf0
 git push -f
 ```
++ 记住密码  
+`git config credential.helper store`  
 + 合并另一个版本  
 `git merge bb28e5c3c02d64d26e88b3969466139a76755cf0 --allow-unrelated-histories`  
 ### git lfs 大文件存储
