@@ -94,5 +94,5 @@ Content/Fonts/*
 Content/*
 !Content/_MyProjects/
 
-*.uasset
-*.umap
+# *.uasset
+# *.umap
