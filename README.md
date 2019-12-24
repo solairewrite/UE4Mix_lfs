@@ -1,5 +1,19 @@
 ﻿# UE4Mix
 UE4开发技能合集  
+***
+## 资源包
+使用 Epic Games Launcher 虚幻引擎-库, 安装资源包  
+安装方式: 
++ 添加到工程  
++ 复制 Content  
+创建工程,然后将Content文件夹下所有的文件,复制到此项目的Content文件夹内  
+
+| 包名 | 安装方式 | 描述 |
+| - | - | - |
+| Animation Starter Pack | 添加到工程 | 简单的动画 |
+| ContentExamples | 复制 Content | 中文名'内容示例',官方教程项目<br/>位于'虚幻引擎 -> 学习 -> Engine Feature Samples' |
+
+***
 ## UnrealEngine4
 ### 网络同步
 [网络同步Github文档](https://github.com/solairewrite/UE4Mix/blob/master/Notes/%E7%BD%91%E7%BB%9C%E5%90%8C%E6%AD%A5.md#服务端函数)  
