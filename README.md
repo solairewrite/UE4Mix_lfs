@@ -14,6 +14,18 @@ UE4开发技能合集
 | ContentExamples | 复制 Content | 中文名'内容示例',官方教程项目<br/>位于'虚幻引擎 -> 学习 -> Engine Feature Samples' |
 
 ***
+
++ 添加字体  
+
+新宋体,由于文件较大,所以未上传  
+C:\Windows\Fonts\新宋体 常规,在编辑器内拖到 Content/_MyProjects/Fonts  
+然后设置 引擎内容/EngineFonts/Roboto, 默认字体族系,为SimSun  
+
++ 骨骼
+
+骨骼不能移动路径,因为蓝图和动画大量引用骨骼  
+如果不传动画包,就需要重新设置 Socket  
+
 ## UnrealEngine4
 ### 网络同步
 [网络同步Github文档](https://github.com/solairewrite/UE4Mix/blob/master/Notes/%E7%BD%91%E7%BB%9C%E5%90%8C%E6%AD%A5.md#服务端函数)  

@@ -81,6 +81,10 @@ DerivedDataCache/*
 # 打包发布的项目,默认文件夹
 WindowsNoEditor/
 
+# 新宋体
+**/SIMSUN.uasset
+**/SIMSUN_Font.uasset
+
 # 虚幻商城安装包
 Content/*
 !Content/_MyProjects/
