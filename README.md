@@ -29,6 +29,7 @@ git push -f
 + 合并另一个版本  
 `git merge bb28e5c3c02d64d26e88b3969466139a76755cf0 --allow-unrelated-histories`  
 ### git lfs 大文件存储
+#### 提交
 + 查看 lfs 版本  
 `git lfs -v`  
 + 开启 lfs 功能  
@@ -39,5 +40,13 @@ git push -f
 `git lfs track`  
 + 查看当前追踪文件列表,在提交后可使用  
 `git lfs ls-files`  
-  
-貌似提交需要手动输入账号密码  
+#### 拉取
+```
+// 可能并不需要这条命令
+git lfs install
+
+// 拉取下来的lfs对象存储在 .git/lfs/objects 目录下
+// 如果没有
+git lfs pull
+```
+SourceTree可能上传失败,这里用命令行(可以记住密码)成功率较高  
