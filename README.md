@@ -54,6 +54,8 @@ git push -f
 `git config credential.helper store`  
 + 合并另一个版本  
 `git merge bb28e5c3c02d64d26e88b3969466139a76755cf0 --allow-unrelated-histories`  
++ 查看git仓库大小  
+打开网页 https://api.github.com/repos/solairewrite/UE4Mix_lfs  
 ### git lfs 大文件存储
 #### 提交
 + 查看 lfs 版本  
