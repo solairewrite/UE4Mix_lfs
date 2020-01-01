@@ -16,7 +16,7 @@
 | 12 | Cloth | 布料 | mark |
 | 13 | [Decal](#Decal) | 贴花 | & |
 | 14 | DynamicSceneShadows | 动态阴影 |  |
-| 15 | Effects | 粒子特效 | mark |
+| 15 | [Effects](#Effects) | 粒子特效 | & |
 | 16 | ExampleProjectWelcome | 欢迎地图 |  |
 | 17 | FBX_Import_Options | FBX导入,动画相关 |  |
 | 18 | Geometry_Editing | BSP画刷创建简单的关卡地形 |  |
@@ -50,7 +50,7 @@
 | 46 | StaticMeshed | 静态网格 |  |
 | 47 | UMG | UI | mark |
 | 48 | Volumes | 体积 |  |
-
+___
 ### Animation
 + Character BP  
   
@@ -95,7 +95,7 @@ AnimBP Anim Graph 添加节点 Slot
 #### 拖尾特效
 Skeletal Mesh 上添加PSC  
 BP 中添加节点 PSC(组件引用) -> Begin Trails  
-
+___
 ### Blueprint_Communication
 蓝图之间交互的3种方式:  
 + Custom Event  
@@ -114,13 +114,42 @@ BP 中添加节点 PSC(组件引用) -> Begin Trails
   声明接口类 BPI, 声明函数 Func()  
   A 直接调用 Actor 的接口函数 Func()  
   B 类设置中实现接口 BPI, 并实现函数 Func() 
-
+___
 ### Blueprint_HUD
 GameMode -> HUD Class 设置的 HUD 会直接显示  
 Receive Draw HUD 事件每帧执行,提供屏幕X,Y尺寸,用于绘制HUD  
-
+___
 ### Decal
 DecalActor,向在体积内的StaticMesh投影  
 修改DecalMaterial属性控制贴花样式,可以为动画贴花  
 StaticMesh -> Rendering -> Receives Decals: 是否接受贴花  
 Sort Order控制贴花绘制顺序  
+___
+### Effects
+#### 1.2 速度锥模块
+#### 1.3 发射器初始位置
+Emitter Initial Location 模块  
+粒子从其它粒子的位置生成  
+#### 1.4 重力
+在空间中指定一个点,所有粒子都被吸引到该点  
+#### 1.5 碰撞
+Collision(Scene Depth)模块  
+#### 1.7 骨架网格物体的骨骼的粒子发射
+通过骨骼/插槽模块实现  
+#### 1.8 半透明粒子阴影投射
+粒子勾选 Cast Shadow  
+光照勾选 Cast Translucent Shadow  
+#### 2.3 黑体节点
+黑体辐射,温度控制颜色  
+#### 2.4 Event Generator 事件生成器
+使用粒子生命周期中可能发生的各种类型的事件,产生,小王,碰撞,爆炸等  
+烟花: 用粒子的消亡创建其它粒子  
+#### 2.5 Ribbon TypeData 从其它粒子流送的条带轨迹
+2个粒子发射器,一个发射器发射源粒子,产生条带  
+一个发射器有Ribbon TypeData模块和Source模块,用于指定源发射器
+#### 2.6 体积粒子效果的光照半透明度
+#### 2.7 Light 光源
+粒子发光
+#### 2.8 Noise 噪点
+Beam TypeData: 光束类型数据,创建连接两个点的效果,如子弹轨迹  
+Beam 借助 Noise 模块产生电弧  
