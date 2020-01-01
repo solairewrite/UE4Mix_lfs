@@ -2,10 +2,10 @@
 ## 关卡
 | 序号 | 关卡 | 描述 | 是否学习 |
 | :-: | :- | :- | :-: |
-| 1 | [Animation](#-Animation) | 动画 | & |
+| 1 | [Animation](#Animation) | 动画 | & |
 | 2 | Audio | 声音 | mark |
-| 3 | [Blueprint_Communication](#-Blueprint_Communication) | 蓝图之间的交互 | & |
-| 4 | [Blueprint_HUD](#-Blueprint_HUD) | 简单的HUD | & |
+| 3 | [Blueprint_Communication](#Blueprint_Communication) | 蓝图之间的交互 | & |
+| 4 | [Blueprint_HUD](#Blueprint_HUD) | 简单的HUD | & |
 | 5 | Blueprint_Input_Examples | 简单的输入控制小游戏 |  |
 | 6 | Blueprint_Mouse_Interaction | 鼠标选中小球 | mark |
 | 7 | Blueprint_Splines | 曲线 |  |
@@ -14,7 +14,7 @@
 | 10 | Blueprints_Overview | 基础 |  |
 | 11 | Character_Rendering | 角色渲染 |  |
 | 12 | Cloth | 布料 | mark |
-| 13 | [Decal](#-Decal) | 贴花 | & |
+| 13 | [Decal](#Decal) | 贴花 | & |
 | 14 | DynamicSceneShadows | 动态阴影 |  |
 | 15 | Effects | 粒子特效 | mark |
 | 16 | ExampleProjectWelcome | 欢迎地图 |  |
