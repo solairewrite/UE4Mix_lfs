@@ -54,6 +54,13 @@ git push -f
 `git config credential.helper store`  
 + 合并另一个版本  
 `git merge bb28e5c3c02d64d26e88b3969466139a76755cf0 --allow-unrelated-histories`  
++ Failed to connect to github.com port 443: Timed out  
+设置代理  
+`git config --global https.proxy http://127.0.0.1:1080`  
+查看代理是否设置成功  
+`git config --get https.proxy`  
+取消代理  
+`git config --global --unset https.proxy`  
 + 查看git仓库大小  
 打开网页 https://api.github.com/repos/solairewrite/UE4Mix_lfs  
 ### git lfs 大文件存储
