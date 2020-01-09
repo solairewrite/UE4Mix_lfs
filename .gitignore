@@ -88,3 +88,6 @@ WindowsNoEditor/
 # 虚幻商城安装包
 Content/*
 !Content/_MyProjects/
+
+# 脚步音效包内容
+FootstepsSoundV2.png
