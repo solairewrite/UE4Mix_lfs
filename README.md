@@ -7,11 +7,17 @@ UE4开发技能合集
 + 添加到工程  
 + 复制 Content  
 创建工程,然后将Content文件夹下所有的文件,复制到此项目的Content文件夹内  
++ 某些项目需要导入.ini配置文件, Edit -> Project Settings  
+  每个模块都有 Export, Import 按钮,尤其注意 Physics, Input  
++ 某些项目需要安装插件, Edit -> Plugins  
+  如: 蓝图丢失 Destructible Component, 需要安装破碎组件 Apex Destruction  
+
 
 | 包名 | 安装方式 | 描述 |
 | - | - | - |
 | Animation Starter Pack | 添加到工程 | 简单的动画 |
 | ContentExamples | 复制 Content | 中文名'内容示例',官方教程项目<br/>位于'虚幻引擎 -> 学习 -> Engine Feature Samples' |
+| Ballistics FX | 复制 Content/BallisticsVFX<br/>配置 Physics, Input, Collision, Rendering<br/>安装Plugin: Apex Destruction | FPS音效,视效 |
 
 ***
 
