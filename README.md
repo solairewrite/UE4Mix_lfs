@@ -77,7 +77,7 @@ git push -f
 + 开启 lfs 功能  
 `git lfs install`  
 + 大文件追踪  
-`git fls track *.uasset`  
+`git lfs track *.uasset`  
 + 查看当前追踪模式  
 `git lfs track`  
 + 查看当前追踪文件列表,在提交后可使用  
