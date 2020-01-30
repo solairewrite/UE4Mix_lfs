@@ -20,6 +20,9 @@ UE4开发技能合集
 | Ballistics FX | 复制 Content/BallisticsVFX<br/>配置 Physics, Input, Collision, Rendering<br/>安装Plugin: Apex Destruction | FPS音效,视效 |
 | SuperGridStarterpack | 复制Content | 各种格子材质 |
 | DynamicCombatSystem | 复制Content | 简单的对战,可以释放魔法 |
+| Paragon: Greystone | 添加到工程 | 主角 |
+| Animal Variety Pack | 添加到工程 | 动物 |
+
 
 
 ***
