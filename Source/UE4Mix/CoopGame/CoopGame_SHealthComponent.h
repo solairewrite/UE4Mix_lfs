@@ -53,4 +53,7 @@ public:
 	// 同步变量触发的函数可以将原来的值作为参数
 	UFUNCTION()
 		void OwnerUpdateHealthUI(float OldHealth);
+
+	UFUNCTION(BlueprintCallable, Category = "HealthComponent")
+		void Heal(float HealAmount);
 };

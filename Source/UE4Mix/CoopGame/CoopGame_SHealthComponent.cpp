@@ -87,6 +87,18 @@ void UCoopGame_SHealthComponent::OwnerUpdateHealthUI(float OldHealth)
 	OnHealthChanged.Broadcast(this, Health, Damage, nullptr, nullptr, nullptr);
 }
 
+void UCoopGame_SHealthComponent::Heal(float HealAmount)
+{
+	if (HealAmount <= 0 || Health <= 0)
+	{
+		return;
+	}
+	Health = FMath::Clamp(Health + HealAmount, 0.0f, DefaultHealth);
+	// SanitizeFloat: 去掉小数点后面的0
+	UE_LOG(LogTemp, Warning, TEXT("加血: %s (+%s)"), *FString::SanitizeFloat(Health), *FString::SanitizeFloat(HealAmount));
+	OnHealthChanged.Broadcast(this, Health, -HealAmount, nullptr, nullptr, nullptr);
+}
+
 void UCoopGame_SHealthComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);

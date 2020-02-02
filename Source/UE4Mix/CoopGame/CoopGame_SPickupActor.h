@@ -29,7 +29,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 		UDecalComponent* DecalComp;
 
-	UPROPERTY(EditDefaultsOnly, Category = "PickupActor")
+	UPROPERTY(EditInstanceOnly, Category = "PickupActor")
 		TSubclassOf<ACoopGame_SPowerupActor> PowerupClass;
 
 	ACoopGame_SPowerupActor* PowerupInstance;

@@ -9,21 +9,21 @@
 class USkeletalMeshComponent;
 class UParticleSystem;
 
-// ÉùÃ÷Í¬²½½á¹¹Ìå
+// ç»“æ„ä½“
 USTRUCT()
 struct FRepFireInfo
 {
 	GENERATED_BODY()
 public:
-	// ²Â²â: Ã¿¸öÍ¬²½µÄÊôĞÔ¶¼ĞèÒª¼ÓUPROPERTY()
+
 	UPROPERTY()
 		bool bHitSomething;
 	UPROPERTY()
-		FVector_NetQuantize HitLoc; // ÍøÂçÍ¬²½ÓÅ»¯ÏòÁ¿Êı¾İ¸ñÊ½
+		FVector_NetQuantize HitLoc;
 	UPROPERTY()
-		TEnumAsByte<EPhysicalSurface> SurfaceType; // Í¬²½Ã¶¾Ù
+		TEnumAsByte<EPhysicalSurface> SurfaceType; // è¡¨é¢ç‰©ç†æè´¨
 	UPROPERTY()
-		int FireCount; // È·±£Ã¿´Î½á¹¹Ìå¶¼ºÍÉÏÒ»´ÎÍ¬²½Ê±²»Í¬,±ÜÃâÏàÍ¬µÄÊıÖµµ¼ÖÂÎŞ·¨Í¬²½
+		int FireCount;
 	UPROPERTY()
 		bool bShouldRep;
 };
@@ -47,10 +47,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 		float BaseDamage;
 
-	// ¿ªÇ¹¶¨Ê±ÈÎÎñ
+	// å®šæ—¶å™¨å¥æŸ„
 	FTimerHandle TimerHandle_TimeBetweenShots;
 	float LastFireTime;
-	// Ã¿·ÖÖÓÉä»÷´ÎÊı
+	// æ¯åˆ†é’Ÿå¼€ç«æ¬¡æ•°
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 		float RateOfFire;
 	float TimeBetweenShots;

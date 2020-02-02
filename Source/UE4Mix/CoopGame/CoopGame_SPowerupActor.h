@@ -35,12 +35,22 @@ protected:
 	UFUNCTION()
 		void OnTickPowerup();
 
+	UPROPERTY(ReplicatedUsing = OnRep_PowerupActive)
+		bool bIsPowerupActive;
+	UFUNCTION()
+		void OnRep_PowerupActive();
+
+	// 蓝图实现函数
+	UFUNCTION(BlueprintImplementableEvent, Category = "Powerups")
+		void OnPowerupStateChanged(bool bActive);
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	void ActivatePowerup();
 
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps);
 	// 蓝图实现,C++调用蓝图
 	UFUNCTION(BlueprintImplementableEvent, Category = "Powerups")
 		void OnActivate();

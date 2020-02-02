@@ -3,6 +3,7 @@
 
 #include "CoopGame_SPowerupActor.h"
 #include "TimerManager.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 ACoopGame_SPowerupActor::ACoopGame_SPowerupActor()
@@ -12,6 +13,9 @@ ACoopGame_SPowerupActor::ACoopGame_SPowerupActor()
 
 	PowerupInterval = 0.0f;
 	TickNum = 0;
+
+	bIsPowerupActive = false;
+	SetReplicates(true);
 }
 
 // Called when the game starts or when spawned
@@ -28,9 +32,16 @@ void ACoopGame_SPowerupActor::OnTickPowerup()
 	if (TicksProcessed >= TickNum)
 	{
 		OnExpired();
+		bIsPowerupActive = false;
+		OnRep_PowerupActive();
 		GetWorldTimerManager().ClearTimer(TimerHandle_PowerupTick);
 	}
 	TicksProcessed++;
+}
+
+void ACoopGame_SPowerupActor::OnRep_PowerupActive()
+{
+	OnPowerupStateChanged(bIsPowerupActive);
 }
 
 // Called every frame
@@ -43,6 +54,8 @@ void ACoopGame_SPowerupActor::Tick(float DeltaTime)
 void ACoopGame_SPowerupActor::ActivatePowerup()
 {
 	OnActivate();
+	bIsPowerupActive = true;
+	OnRep_PowerupActive();
 	if (PowerupInterval > 0.0f)
 	{
 		GetWorldTimerManager().SetTimer(TimerHandle_PowerupTick, this, &ACoopGame_SPowerupActor::OnTickPowerup, PowerupInterval, true, 0.0f);
@@ -53,3 +66,9 @@ void ACoopGame_SPowerupActor::ActivatePowerup()
 	}
 }
 
+void ACoopGame_SPowerupActor::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps)
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ACoopGame_SPowerupActor, bIsPowerupActive);
+}

@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "CoopGame_SWeapon.h"
@@ -100,7 +100,8 @@ void ACoopGame_SWeapon::Fire()
 	//	设置胶囊体组件忽略 WeaponFire 通道, Mesh 组件阻挡 WeaponFire 通道
 	// WeaponFire 通道对应预定义宏 ECC_GameTraceChannel1
 
-	bHitSomething = GetWorld()->LineTraceSingleByChannel(Hit, EyeLocation, TraceEnd, Collision_WeaponFire, QueryParams);
+	bHitSomething = GetWorld()->LineTraceSingleByChannel(Hit, EyeLocation, TraceEnd, ECC_GameTraceChannel1, QueryParams);
+	//bHitSomething = GetWorld()->LineTraceSingleByChannel(Hit, EyeLocation, TraceEnd, ECC_Visibility, QueryParams);
 	if (bHitSomething)
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("武器射线检测,检测到物体"));
@@ -166,7 +167,7 @@ void ACoopGame_SWeapon::OnFireHitSomething(FHitResult HitResult)
 		float RealDamage = BaseDamage;
 		switch (SurfaceType)
 		{
-		case Physic_Default:
+		case Flesh:
 			break;
 		case Physic_Head:
 			RealDamage *= 4.0f;
@@ -242,7 +243,7 @@ void ACoopGame_SWeapon::OnRep_Fire()
 	UParticleSystem* tHitEffect = DefaultImpactEffect;
 	switch (RepFireInfo.SurfaceType)
 	{
-	case Physic_Default:
+	case Flesh:
 		break;
 	case Physic_Head:
 		tHitEffect = HeadImpactEffect;

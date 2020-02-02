@@ -20,6 +20,10 @@ ACoopGame_SPickupActor::ACoopGame_SPickupActor()
 	DecalComp->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f));
 	DecalComp->DecalSize = FVector(64, 75, 75);
 	DecalComp->SetupAttachment(RootComponent);
+
+	CooldownDuration = 10.0f;
+
+	SetReplicates(true);
 }
 
 // Called when the game starts or when spawned
@@ -27,7 +31,11 @@ void ACoopGame_SPickupActor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Respawn();
+	if (Role == ROLE_Authority)
+	{
+		Respawn();
+	}
+	
 }
 
 void ACoopGame_SPickupActor::Respawn()
@@ -41,6 +49,8 @@ void ACoopGame_SPickupActor::Respawn()
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	PowerupInstance = GetWorld()->SpawnActor<ACoopGame_SPowerupActor>(PowerupClass, GetTransform(), SpawnParams);
+	FAttachmentTransformRules AttachRule = FAttachmentTransformRules::SnapToTargetIncludingScale;
+	PowerupInstance->AttachToActor(this, AttachRule);
 }
 
 // Called every frame
@@ -54,13 +64,13 @@ void ACoopGame_SPickupActor::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
 
-	if (PowerupInstance)
+	if (Role == ROLE_Authority && PowerupInstance)
 	{
 		PowerupInstance->ActivatePowerup();
 		PowerupInstance = nullptr;
+		// 重生
+		GetWorldTimerManager().SetTimer(TimerHandle_RespawnTimer, this, &ACoopGame_SPickupActor::Respawn, CooldownDuration);
 	}
 
-	// 重生
-	GetWorldTimerManager().SetTimer(TimerHandle_RespawnTimer, this, &ACoopGame_SPickupActor::Respawn, CooldownDuration);
 }
 

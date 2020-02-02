@@ -4,9 +4,9 @@
 
 #include "CoreMinimal.h"
 
-// Ìí¼ÓÎïÀí²ÄÖÊºê SurfaceType1 ÊÇÏµÍ³Ô¤Éè
-#define Physic_Default SurfaceType1
-#define Physic_Head SurfaceType2
+// å®šä¹‰å®,å†…ç½®ç‰©ç†æè´¨ SurfaceType14
+#define Flesh SurfaceType8
+#define Physic_Head SurfaceType37
 
-// Ìí¼ÓÅö×²Í¨µÀºê ECC_GameTraceChannel1 ÊÇÏµÍ³Ô¤Éè
-#define Collision_WeaponFire ECC_GameTraceChannel1
+// å®šä¹‰å®,å†…ç½®å°„çº¿é¢‘é“ ECC_GameTraceChannel1
+#define Collision_Weapon ECC_GameTraceChannel1

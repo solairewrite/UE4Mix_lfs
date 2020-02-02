@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "CoopGame_SCharacter.h"
@@ -13,6 +13,7 @@
 #include "CoopGame_SHealthComponent.h"
 //#include "Components/CapsuleComponent.h"
 #include "Net/UnrealNetwork.h"
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
 ACoopGame_SCharacter::ACoopGame_SCharacter()
@@ -37,7 +38,7 @@ ACoopGame_SCharacter::ACoopGame_SCharacter()
 	WeaponAttackSocketName = "WeaponSocket";
 
 	// 碰撞设置,禁止子弹打到胶囊体,只允许打到Mesh
-	GetCapsuleComponent()->SetCollisionResponseToChannel(Collision_WeaponFire, ECR_Ignore);
+	GetCapsuleComponent()->SetCollisionResponseToChannel(Collision_Weapon, ECR_Ignore);
 
 	// 添加血量组件
 	HealthComp = CreateDefaultSubobject<UCoopGame_SHealthComponent>(TEXT("HealthComp"));
@@ -115,13 +116,19 @@ void ACoopGame_SCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 void ACoopGame_SCharacter::MoveForward(float Value)
 {
 	// 控制玩家前进
-	AddMovementInput(GetActorForwardVector() * Value);
+	//AddMovementInput(GetActorForwardVector() * Value);
+	FRotator ControlRot(0, GetControlRotation().Yaw, 0);
+	FVector ControlForward = UKismetMathLibrary::GetForwardVector(ControlRot);
+	AddMovementInput(ControlForward * Value);
 }
 
 void ACoopGame_SCharacter::MoveRight(float Value)
 {
 	// 控制玩家向右移动
-	AddMovementInput(GetActorRightVector() * Value);
+	//AddMovementInput(GetActorRightVector() * Value);
+	FRotator ControlRot(0, GetControlRotation().Yaw, 0);
+	FVector ControlRight = UKismetMathLibrary::GetRightVector(ControlRot);
+	AddMovementInput(ControlRight * Value);
 }
 
 void ACoopGame_SCharacter::BeginCrouch()
