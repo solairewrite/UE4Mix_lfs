@@ -100,7 +100,7 @@ void ACoopGame_SWeapon::Fire()
 	//	设置胶囊体组件忽略 WeaponFire 通道, Mesh 组件阻挡 WeaponFire 通道
 	// WeaponFire 通道对应预定义宏 ECC_GameTraceChannel1
 
-	bHitSomething = GetWorld()->LineTraceSingleByChannel(Hit, EyeLocation, TraceEnd, ECC_GameTraceChannel1, QueryParams);
+	bHitSomething = GetWorld()->LineTraceSingleByChannel(Hit, EyeLocation, TraceEnd, Collision_WeaponFire, QueryParams);
 	//bHitSomething = GetWorld()->LineTraceSingleByChannel(Hit, EyeLocation, TraceEnd, ECC_Visibility, QueryParams);
 	if (bHitSomething)
 	{

@@ -66,7 +66,8 @@ void ACoopGame_SPowerupActor::ActivatePowerup()
 	}
 }
 
-void ACoopGame_SPowerupActor::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps)
+// 注意后面的const
+void ACoopGame_SPowerupActor::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 

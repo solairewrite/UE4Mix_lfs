@@ -50,7 +50,7 @@ public:
 
 	void ActivatePowerup();
 
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps);
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
 	// 蓝图实现,C++调用蓝图
 	UFUNCTION(BlueprintImplementableEvent, Category = "Powerups")
 		void OnActivate();

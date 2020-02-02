@@ -9,4 +9,4 @@
 #define Physic_Head SurfaceType37
 
 // 定义宏,内置射线频道 ECC_GameTraceChannel1
-#define Collision_Weapon ECC_GameTraceChannel1
+#define Collision_WeaponFire ECC_GameTraceChannel4

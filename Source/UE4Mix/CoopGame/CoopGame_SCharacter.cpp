@@ -38,7 +38,7 @@ ACoopGame_SCharacter::ACoopGame_SCharacter()
 	WeaponAttackSocketName = "WeaponSocket";
 
 	// 碰撞设置,禁止子弹打到胶囊体,只允许打到Mesh
-	GetCapsuleComponent()->SetCollisionResponseToChannel(Collision_Weapon, ECR_Ignore);
+	GetCapsuleComponent()->SetCollisionResponseToChannel(Collision_WeaponFire, ECR_Ignore);
 
 	// 添加血量组件
 	HealthComp = CreateDefaultSubobject<UCoopGame_SHealthComponent>(TEXT("HealthComp"));
