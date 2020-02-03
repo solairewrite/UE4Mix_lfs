@@ -48,12 +48,12 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void ActivatePowerup();
+	void ActivatePowerup(AActor* ActiveFor);
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
 	// 蓝图实现,C++调用蓝图
 	UFUNCTION(BlueprintImplementableEvent, Category = "Powerups")
-		void OnActivate();
+		void OnActivate(AActor* ActiveFor);
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Powerups")
 		void OnPowerupTicked();

@@ -51,9 +51,9 @@ void ACoopGame_SPowerupActor::Tick(float DeltaTime)
 
 }
 
-void ACoopGame_SPowerupActor::ActivatePowerup()
+void ACoopGame_SPowerupActor::ActivatePowerup(AActor* ActiveFor)
 {
-	OnActivate();
+	OnActivate(ActiveFor);
 	bIsPowerupActive = true;
 	OnRep_PowerupActive();
 	if (PowerupInterval > 0.0f)

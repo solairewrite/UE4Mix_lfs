@@ -66,7 +66,7 @@ void ACoopGame_SPickupActor::NotifyActorBeginOverlap(AActor* OtherActor)
 
 	if (Role == ROLE_Authority && PowerupInstance)
 	{
-		PowerupInstance->ActivatePowerup();
+		PowerupInstance->ActivatePowerup(OtherActor);
 		PowerupInstance = nullptr;
 		// 重生
 		GetWorldTimerManager().SetTimer(TimerHandle_RespawnTimer, this, &ACoopGame_SPickupActor::Respawn, CooldownDuration);
