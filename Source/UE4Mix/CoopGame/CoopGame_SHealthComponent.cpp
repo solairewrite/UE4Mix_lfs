@@ -99,6 +99,12 @@ void UCoopGame_SHealthComponent::Heal(float HealAmount)
 	OnHealthChanged.Broadcast(this, Health, -HealAmount, nullptr, nullptr, nullptr);
 }
 
+// 标记为const,禁止修改任何变量
+float UCoopGame_SHealthComponent::GetHealth() const
+{
+	return Health;
+}
+
 void UCoopGame_SHealthComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);

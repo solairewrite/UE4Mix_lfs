@@ -19,8 +19,14 @@ public:
 
 	virtual void StartPlay() override;
 
+	virtual void Tick(float DeltaSeconds) override;
+
 protected:
 	FTimerHandle TH_BotSpawner;
+	FTimerHandle TH_NextWaveStart;
+
+	// 检查是否还有Bot存活
+	void CheckWaveState();
 
 	UPROPERTY(EditDefaultsOnly, Category = "GameMode")
 		int32 BaseSpawnBotCount;
@@ -46,4 +52,8 @@ protected:
 	void EndWave();
 
 	void PrepareForNextWave();
+
+	void CheckAnyPlayerAlive();
+
+	void GameOver();
 };

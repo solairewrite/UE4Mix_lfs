@@ -17,9 +17,9 @@ ACoopGame_ExplosiveBarrel::ACoopGame_ExplosiveBarrel()
 	HealthComp = CreateDefaultSubobject<UCoopGame_SHealthComponent>(TEXT("HealthComp"));
 	HealthComp->OnHealthChanged.AddDynamic(this, &ACoopGame_ExplosiveBarrel::OnHealthChanged);
 
-	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT(" MeshComp"));
+	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComp"));
+	// 模拟物理
 	MeshComp->SetSimulatePhysics(true);
-	// 设置碰撞类型
 	MeshComp->SetCollisionObjectType(ECC_PhysicsBody);
 	SetRootComponent(MeshComp);
 
