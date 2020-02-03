@@ -91,4 +91,6 @@ public:
 
 	// 相交回调函数
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+
+	void OnOverlap(AActor* OtherActor);
 };

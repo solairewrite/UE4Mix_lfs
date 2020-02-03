@@ -21,11 +21,17 @@ public:
 
 protected:
 	FTimerHandle TH_BotSpawner;
+
 	UPROPERTY(EditDefaultsOnly, Category = "GameMode")
 		int32 BaseSpawnBotCount;
 	int32 BotsToSpawnCount;
+
 	UPROPERTY(EditDefaultsOnly, Category = "GameMode")
-		int32 WaveCount;
+		int32 MaxWaveCount;
+	int32 WaveCount;
+
+	UPROPERTY(EditDefaultsOnly, Category = "GameMode")
+		float SpawnBotInterval;
 	UPROPERTY(EditDefaultsOnly, Category = "GameMode")
 		float SpawnBotWaveInterval;
 

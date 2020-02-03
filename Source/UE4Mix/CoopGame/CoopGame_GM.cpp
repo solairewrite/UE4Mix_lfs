@@ -6,9 +6,10 @@
 
 ACoopGame_GM::ACoopGame_GM()
 {
-	BaseSpawnBotCount = 3;
-	WaveCount = 3;
-	SpawnBotWaveInterval = 3.0f;
+	BaseSpawnBotCount = 1;
+	MaxWaveCount = 3;
+	SpawnBotInterval = 0.5f;
+	SpawnBotWaveInterval = 5.0f;
 }
 
 void ACoopGame_GM::StartPlay()
@@ -31,7 +32,7 @@ void ACoopGame_GM::StartWave()
 {
 	WaveCount++;
 	BotsToSpawnCount = WaveCount * BaseSpawnBotCount; // 越往后,每波生成越多
-	GetWorldTimerManager().SetTimer(TH_BotSpawner, this, &ACoopGame_GM::SpawnABot, 1.0f, true, 0.0f);
+	GetWorldTimerManager().SetTimer(TH_BotSpawner, this, &ACoopGame_GM::SpawnABot, SpawnBotInterval, true, 0.0f);
 }
 
 void ACoopGame_GM::EndWave()
@@ -43,6 +44,10 @@ void ACoopGame_GM::EndWave()
 // 在上一波结束时,开启定时器,生成下一波
 void ACoopGame_GM::PrepareForNextWave()
 {
+	if (WaveCount >= MaxWaveCount)
+	{
+		return;
+	}
 	FTimerHandle TH_NextWaveStart;
 	GetWorldTimerManager().SetTimer(TH_NextWaveStart, this, &ACoopGame_GM::StartWave, SpawnBotWaveInterval, false);
 }

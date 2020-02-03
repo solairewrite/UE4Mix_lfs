@@ -14,6 +14,7 @@
 #include "CoopGame_SCharacter.h"
 #include "TimerManager.h"
 #include "Sound/SoundCue.h"
+#include "CoopGame_CollideQueryActor.h"
 
 // Sets default values
 ACoopGame_STrackerBot::ACoopGame_STrackerBot()
@@ -58,6 +59,13 @@ void ACoopGame_STrackerBot::BeginPlay()
 	// 定时任务: 检测附近Bot数量,更新PowerLevel
 	FTimerHandle TimerHandle_CheckPowerLevel;
 	GetWorldTimerManager().SetTimer(TimerHandle_CheckPowerLevel, this, &ACoopGame_STrackerBot::OnCheckNearbyBots, 1.0f, true);
+
+	// 生成用于碰撞检测的Actor
+	//ACoopGame_CollideQueryActor* CollideActor = GetWorld()->SpawnActor<ACoopGame_CollideQueryActor>(GetActorLocation(), FRotator::ZeroRotator);
+	//if (CollideActor)
+	//{
+	//	CollideActor->Init(this);
+	//}
 }
 
 FVector ACoopGame_STrackerBot::GetNextPathPoint()
@@ -106,6 +114,8 @@ void ACoopGame_STrackerBot::SelfDestruct()
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplosionEffect, GetActorLocation());
 	UGameplayStatics::PlaySoundAtLocation(this, ExplodeSound, GetActorLocation());
 	MeshComp->SetVisibility(false, true);
+	// 可能模拟物理了之后就禁止修改碰撞
+	MeshComp->SetSimulatePhysics(false);
 	MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	if (Role == ROLE_Authority)
@@ -209,6 +219,24 @@ void ACoopGame_STrackerBot::SetupPlayerInputComponent(UInputComponent* PlayerInp
 }
 
 void ACoopGame_STrackerBot::NotifyActorBeginOverlap(AActor* OtherActor)
+{
+	if (!bStartedSelfDestruction && !bExploded)
+	{
+		ACoopGame_SCharacter* PlayerPawn = Cast<ACoopGame_SCharacter>(OtherActor);
+		if (PlayerPawn)
+		{
+			if (Role == ROLE_Authority)
+			{
+				GetWorldTimerManager().SetTimer(TimerHandle_SelfDamage, this, &ACoopGame_STrackerBot::DamageSelf, SelfDamageInterval, true, 0.0f);
+			}
+			bStartedSelfDestruction = true;
+
+			UGameplayStatics::SpawnSoundAttached(SelfDestructSound, RootComponent);
+		}
+	}
+}
+
+void ACoopGame_STrackerBot::OnOverlap(AActor* OtherActor)
 {
 	if (!bStartedSelfDestruction && !bExploded)
 	{
