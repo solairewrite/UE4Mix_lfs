@@ -16,6 +16,14 @@
 + -> 绑定事件到 OnQueryFinished,添加符合签名的自定义事件  
 + Switch Query Status,在 Success 的情况下 -> Get Query Results as Locations(Query Instance),查询到的点的数组  
 
+### 测试方式
+Distance: 判断到指定类型Actor的距离,Scoring Factor 为负值时,越近越好  
+Trace: 射线检测,即判断是否有障碍物  
+测试目的可以选择仅用于评分,表示即使没有障碍物,也可以  
+Filter and Score && not Hit && Item Height Offset, Context Height Offset 同时设为100  
+表示不希望有障碍物,但是它的高度不高时,可通过  
+
+
 ## 寻路
 .build.cs 中添加 "AIModule", "NavigationSystem"  
 ```
