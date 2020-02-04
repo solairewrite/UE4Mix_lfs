@@ -4,6 +4,7 @@
 #include "CoopGame_SHealthComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "CoopGame_SCharacter.h"
+#include "CoopGame_GM.h"
 
 static int32 DebugHealth = 0;
 FAutoConsoleVariableRef CVARDebugHealth(
@@ -24,6 +25,8 @@ UCoopGame_SHealthComponent::UCoopGame_SHealthComponent()
 
 	// 同步组件
 	SetIsReplicated(true);
+
+	bIsDead = false;
 }
 
 
@@ -49,7 +52,7 @@ void UCoopGame_SHealthComponent::BeginPlay()
 
 void UCoopGame_SHealthComponent::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
 {
-	if (Damage <= 0.0f)
+	if (Damage <= 0.0f || bIsDead)
 	{
 		return;
 	}
@@ -57,6 +60,17 @@ void UCoopGame_SHealthComponent::HandleTakeAnyDamage(AActor* DamagedActor, float
 	Health = FMath::Clamp(Health - Damage, 0.0f, DefaultHealth);
 
 	OnHealthChanged.Broadcast(this, Health, Damage, DamageType, InstigatedBy, DamageCauser);
+
+	bIsDead = Health <= 0.0f;
+	if (bIsDead)
+	{
+		// 获取GameMode
+		ACoopGame_GM* GM = Cast<ACoopGame_GM>(GetWorld()->GetAuthGameMode());
+		if (GM)
+		{
+			GM->OnActorKilled.Broadcast(GetOwner(), DamageCauser, InstigatedBy);
+		}
+	}
 
 	// 格式化浮点数,删除后面的0
 	if (DebugHealth >= 1)

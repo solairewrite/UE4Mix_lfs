@@ -183,7 +183,7 @@ void ACoopGame_SWeapon::OnFireHitSomething(FHitResult HitResult)
 			AActor* HitActor = HitResult.GetActor();
 			FVector ShotDirection = HitResult.TraceEnd - HitResult.TraceStart;
 			AController* InstigatorController = MyOwner->GetInstigatorController();
-			UGameplayStatics::ApplyPointDamage(HitActor, RealDamage, ShotDirection, HitResult, InstigatorController, this, DamageType);
+			UGameplayStatics::ApplyPointDamage(HitActor, RealDamage, ShotDirection, HitResult, InstigatorController, MyOwner, DamageType);
 
 			//UE_LOG(LogTemp, Warning, TEXT("武器射线造成伤害: %f"), RealDamage);
 		}

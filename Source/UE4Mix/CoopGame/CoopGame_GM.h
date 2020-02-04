@@ -6,6 +6,13 @@
 #include "GameFramework/GameModeBase.h"
 #include "CoopGame_GM.generated.h"
 
+
+// 引用外部枚举
+enum class EWaveState :uint8;
+
+// 声明代理
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnActorKilled, AActor*, VictimActor, AActor*, KillerActor, AController*, KillerController);
+
 /**
  *
  */
@@ -56,4 +63,13 @@ protected:
 	void CheckAnyPlayerAlive();
 
 	void GameOver();
+
+	void SetWaveState(EWaveState NewState);
+
+public:
+	// 代理函数,蓝图实现代理
+	UPROPERTY(BlueprintAssignable, Category = "GameMode")
+		FOnActorKilled OnActorKilled;
+
+	void RestartDeadPlayers();
 };
