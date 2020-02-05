@@ -45,3 +45,38 @@ FVector ACoopGame_STrackerBot::GetNextPathPoint()
 	return GetActorLocation();
 }
 ```
+
+## Behavior Tree 行为树
+运行时,单引号( ' )可以显示AI状态  
+| 类 | 作用 |
+| - | - |
+| Behavior Tree | 行为树,实际控制AI的行为,维护一个Blackboard |
+| Blackboard | 黑板,用于储存行为树中的变量 |
+| EQS | 用于查找位置/物体,找到后可以设为黑板的变量 |
+| EnvQueryContext_BlueprintBase | 返回目标物体,用于EQS的测试节点 |
+| BTDecorator_BlueprintBase | 返回bool值,位于行为树的Selector节点下方的Sequence节点上方,用于判断能否执行这个Sequence |
+
+### Behavior Tree 重要节点
+| 节点 | 作用 |
+| - | - |
+| Root | 根节点,可以指定用于储存变量的Blackboard |
+| Selector | 从左到右依次执行节点,如果一个成功了,就返回成功;如果全部失败,则返回失败 |
+| Decorator | 位于Selector下方节点的上方,同于判断该节点能否进行 |
+| Sequence | 从左到右依次执行节点 |
+| Wait | 睡眠 |
+| Run EQSQuery | 执行EQS查询,并可以指定Blackboard Key,将查询结果存储于黑板中 |
+| Move To | 移动到指定位置,设置Blackboard key来获取位置 |
+| Blackboard | 查询Blackboard的属性是否有值,返回bool值,在节点上方判断节点是否运行 |
+
++ AI 通过蓝图运行行为树  
+  self -> Get AIController -> Run Behavior Tree
+
++ AI BP 设置黑板值
+  self -> Get Blackboard -> Set Value as Object  
++ Decorator 重写 Perform Condition Check AI  
++ Decorator中获取黑板中的变量  
+  创建节点Get Blackboard Value as Actor,并将Key提升为变量Blackboard Key, 在BT中指定Blackboard Key  
++ EnvQueryContext_BlueprintBase 重写  
+  Provide Actors Set  或 Provide Single Actor  
++ Decorator 的观察器终止属性  
+  观察器终止: Self, 当Decorator的bool == false时,停止此节点  
