@@ -57,6 +57,16 @@ void UCoopGame_SHealthComponent::HandleTakeAnyDamage(AActor* DamagedActor, float
 		return;
 	}
 
+	// 友军检测
+	if (IsFriendly(DamagedActor,DamageCauser))
+	{
+		// 允许自爆
+		if (DamageCauser != DamagedActor)
+		{
+			return;
+		}
+	}
+
 	Health = FMath::Clamp(Health - Damage, 0.0f, DefaultHealth);
 
 	OnHealthChanged.Broadcast(this, Health, Damage, DamageType, InstigatedBy, DamageCauser);
@@ -117,6 +127,25 @@ void UCoopGame_SHealthComponent::Heal(float HealAmount)
 float UCoopGame_SHealthComponent::GetHealth() const
 {
 	return Health;
+}
+
+bool UCoopGame_SHealthComponent::IsFriendly(AActor* ActorA, AActor* ActorB)
+{
+	if (ActorA == nullptr || ActorB == nullptr)
+	{
+		return true;
+	}
+
+	// 根据类获取组件
+	UCoopGame_SHealthComponent* HealthCompA = Cast<UCoopGame_SHealthComponent>(ActorA->GetComponentByClass(UCoopGame_SHealthComponent::StaticClass()));
+	UCoopGame_SHealthComponent* HealthCompB = Cast<UCoopGame_SHealthComponent>(ActorB->GetComponentByClass(UCoopGame_SHealthComponent::StaticClass()));
+
+	if (HealthCompA == nullptr || HealthCompB == nullptr)
+	{
+		return true;
+	}
+
+	return HealthCompA->TeamNum == HealthCompB->TeamNum;
 }
 
 void UCoopGame_SHealthComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
