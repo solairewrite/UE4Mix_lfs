@@ -205,6 +205,10 @@ void ACoopGame_SCharacter::OnHealthChanged(UCoopGame_SHealthComponent* HealthCom
 		// 使Pawn与PC分离,等待销毁
 		DetachFromControllerPendingDestroy();
 		SetLifeSpan(10.0f);
+		if (CurrentWeapon)
+		{
+			CurrentWeapon->StopFire();
+		}
 	}
 }
 

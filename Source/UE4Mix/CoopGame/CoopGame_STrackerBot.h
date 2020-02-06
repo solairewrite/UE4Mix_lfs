@@ -31,6 +31,10 @@ protected:
 	FVector NextPathPoint;
 	FVector GetNextPathPoint();
 
+	void RefreshPath();
+
+	FTimerHandle TH_RefreshPath;
+
 	UPROPERTY(EditDefaultsOnly, Category = "TrackerBot")
 		float MovementForce;
 

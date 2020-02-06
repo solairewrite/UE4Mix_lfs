@@ -15,6 +15,16 @@
 #include "TimerManager.h"
 #include "Sound/SoundCue.h"
 #include "CoopGame_CollideQueryActor.h"
+#include "TimerManager.h"
+
+
+static int32 DebugBot;
+FAutoConsoleVariableRef CVARDebugBot(
+	TEXT("Coop.DebugBot"),
+	DebugBot,
+	TEXT("Draw debug lines for bot"),
+	ECVF_Cheat
+);
 
 // Sets default values
 ACoopGame_STrackerBot::ACoopGame_STrackerBot()
@@ -35,8 +45,8 @@ ACoopGame_STrackerBot::ACoopGame_STrackerBot()
 	HealthComp = CreateDefaultSubobject<UCoopGame_SHealthComponent>("HealthComp");
 	HealthComp->OnHealthChanged.AddDynamic(this, &ACoopGame_STrackerBot::HandleTakeDamage);
 
-	ExplosionDamage = 40.0f;
-	ExplosionRadius = 200.0f;
+	ExplosionDamage = 60.0f;
+	ExplosionRadius = 350.0f;
 
 	// 创建球形碰撞组件
 	SphereComp = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp"));
@@ -70,15 +80,52 @@ void ACoopGame_STrackerBot::BeginPlay()
 
 FVector ACoopGame_STrackerBot::GetNextPathPoint()
 {
-	ACharacter* PlayerPawn = UGameplayStatics::GetPlayerCharacter(this, 0);
-	// UE4Mix.build.cs 中添加 "NavigationSystem"
-	UNavigationPath* NavPath = UNavigationSystemV1::FindPathToActorSynchronously(this, GetActorLocation(), PlayerPawn);
-	if (NavPath && NavPath->PathPoints.Num() > 1)
+	//ACharacter* PlayerPawn = UGameplayStatics::GetPlayerCharacter(this, 0);
+	// 检测最近的玩家
+	AActor* BestTarget = nullptr;
+	float NearestTargetDistance = FLT_MAX;
+	for (FConstPawnIterator It = GetWorld()->GetPawnIterator(); It; ++It)
 	{
-		return NavPath->PathPoints[1];
+		APawn* TestPawn = It->Get();
+		if (TestPawn == nullptr || UCoopGame_SHealthComponent::IsFriendly(TestPawn, this))
+		{
+			continue;
+		}
+
+		UCoopGame_SHealthComponent* TestPawnHealthComp = Cast<UCoopGame_SHealthComponent>(TestPawn->GetComponentByClass(UCoopGame_SHealthComponent::StaticClass()));
+		if (TestPawnHealthComp && TestPawnHealthComp->GetHealth() > 0.0f)
+		{
+			float Distance = (TestPawn->GetActorLocation() - GetActorLocation()).Size();
+			if (Distance < NearestTargetDistance)
+			{
+				BestTarget = TestPawn;
+				NearestTargetDistance = Distance;
+			}
+		}
 	}
+
+	if (BestTarget)
+	{
+		// UE4Mix.build.cs 中添加 "NavigationSystem"
+		UNavigationPath* NavPath = UNavigationSystemV1::FindPathToActorSynchronously(this, GetActorLocation(), BestTarget);
+
+		// 防止AI卡住,定时任务
+		GetWorldTimerManager().ClearTimer(TH_RefreshPath);
+		GetWorldTimerManager().SetTimer(TH_RefreshPath, this, &ACoopGame_STrackerBot::RefreshPath, 5.0f, false);
+
+		if (NavPath && NavPath->PathPoints.Num() > 1)
+		{
+			return NavPath->PathPoints[1];
+		}
+	}
+
 	// 寻路失败
 	return GetActorLocation();
+}
+
+void ACoopGame_STrackerBot::RefreshPath()
+{
+	NextPathPoint = GetNextPathPoint();
 }
 
 void ACoopGame_STrackerBot::HandleTakeDamage(UCoopGame_SHealthComponent* HealthComponent, float Health, float HealthDelta, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
@@ -241,7 +288,7 @@ void ACoopGame_STrackerBot::OnOverlap(AActor* OtherActor)
 	if (!bStartedSelfDestruction && !bExploded)
 	{
 		ACoopGame_SCharacter* PlayerPawn = Cast<ACoopGame_SCharacter>(OtherActor);
-		if (PlayerPawn)
+		if (PlayerPawn && !UCoopGame_SHealthComponent::IsFriendly(OtherActor, this))
 		{
 			if (Role == ROLE_Authority)
 			{
