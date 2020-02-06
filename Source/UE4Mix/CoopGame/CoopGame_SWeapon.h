@@ -55,6 +55,10 @@ protected:
 		float RateOfFire;
 	float TimeBetweenShots;
 
+	// 子弹随机锥角
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon", meta = (ClampMin = 0.0f))
+		float BulletSpread;
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

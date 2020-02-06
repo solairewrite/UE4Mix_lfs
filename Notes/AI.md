@@ -55,6 +55,7 @@ FVector ACoopGame_STrackerBot::GetNextPathPoint()
 | EQS | 用于查找位置/物体,找到后可以设为黑板的变量 |
 | EnvQueryContext_BlueprintBase | 返回目标物体,用于EQS的测试节点 |
 | BTDecorator_BlueprintBase | 返回bool值,位于行为树的Selector节点下方的Sequence节点上方,用于判断能否执行这个Sequence |
+| BTTask_BlueprintBase | 自定义行为树事件 |
 
 ### Behavior Tree 重要节点
 | 节点 | 作用 |
@@ -67,6 +68,7 @@ FVector ACoopGame_STrackerBot::GetNextPathPoint()
 | Run EQSQuery | 执行EQS查询,并可以指定Blackboard Key,将查询结果存储于黑板中 |
 | Move To | 移动到指定位置,设置Blackboard key来获取位置 |
 | Blackboard | 查询Blackboard的属性是否有值,返回bool值,在节点上方判断节点是否运行 |
+| Default Focus | 看 |
 
 + AI 通过蓝图运行行为树  
   self -> Get AIController -> Run Behavior Tree
@@ -80,3 +82,5 @@ FVector ACoopGame_STrackerBot::GetNextPathPoint()
   Provide Actors Set  或 Provide Single Actor  
 + Decorator 的观察器终止属性  
   观察器终止: Self, 当Decorator的bool == false时,停止此节点  
+  观察器终止: Lower Priority, 当Decorator的bool == true时,开始此节点,停止右面的节点
++ BTTask_BlueprintBase 重写Receive Execute AI

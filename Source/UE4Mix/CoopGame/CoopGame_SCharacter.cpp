@@ -60,6 +60,15 @@ void ACoopGame_SCharacter::BeginPlay()
 	}
 }
 
+void ACoopGame_SCharacter::Destroyed()
+{
+	if (CurrentWeapon)
+	{
+		CurrentWeapon->StopFire();
+		CurrentWeapon->Destroy();
+	}
+}
+
 void ACoopGame_SCharacter::StartFire()
 {
 	if (CurrentWeapon)

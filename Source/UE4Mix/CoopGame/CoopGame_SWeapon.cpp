@@ -41,6 +41,8 @@ ACoopGame_SWeapon::ACoopGame_SWeapon()
 	SetReplicates(true);
 	NetUpdateFrequency = 100.0f; // 每秒更新多少次
 	MinNetUpdateFrequency = 33.0f; // 默认2.0f
+
+	BulletSpread = 2.0f;
 }
 
 // Called when the game starts or when spawned
@@ -81,7 +83,11 @@ void ACoopGame_SWeapon::Fire()
 	MyOwner->GetActorEyesViewPoint(EyeLocation, EyeRotation);
 
 	// Vector() 将旋转转为它的朝向的单位向量
-	FVector TraceEnd = EyeLocation + (EyeRotation.Vector() * 10000);
+	// 锥角范围内随机向量,子弹偏离
+	FVector ShotDirection = EyeRotation.Vector();
+	float HalfRad = FMath::DegreesToRadians(BulletSpread);
+	ShotDirection = FMath::VRandCone(ShotDirection, HalfRad, HalfRad);
+	FVector TraceEnd = EyeLocation + (ShotDirection * 10000);
 	FCollisionQueryParams QueryParams;
 	QueryParams.AddIgnoredActor(MyOwner);
 	QueryParams.AddIgnoredActor(this);

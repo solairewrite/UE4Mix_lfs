@@ -24,6 +24,8 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	virtual void Destroyed() override;
+
 	bool bWantsToZoom;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Player")
@@ -39,8 +41,11 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, Category = "Player")
 		FName WeaponAttackSocketName;
 
-	void StartFire();
-	void StopFire();
+	// 蓝图调用C++
+	UFUNCTION(BlueprintCallable, Category = "Player")
+		void StartFire();
+	UFUNCTION(BlueprintCallable, Category = "Player")
+		void StopFire();
 
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 		UCoopGame_SHealthComponent* HealthComp;

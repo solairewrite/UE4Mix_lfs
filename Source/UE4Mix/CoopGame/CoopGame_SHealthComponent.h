@@ -60,4 +60,10 @@ public:
 		void Heal(float HealAmount);
 
 	float GetHealth() const;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "HealthComponent")
+		uint8 TeamNum;
+	// 蓝图纯函数
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "HealthComponent")
+		static bool IsFriendly(AActor* ActorA, AActor* ActorB);
 };
