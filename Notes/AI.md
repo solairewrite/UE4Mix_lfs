@@ -1,5 +1,6 @@
 # AI
 ## EQS Environment Querying System
+向场景中添加 NavMeshBoundsVolume  
 在选定位置附近生成一系列测试点,并根据自定义的规则对这些测试点进行评分,返回合适的测试点数组  
 ### 应用
 在指定位置附近生成敌人,距离玩家越远越好  
