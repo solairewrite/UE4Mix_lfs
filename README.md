@@ -76,6 +76,9 @@ git push -f
 `git config --global --unset https.proxy`  
 + 查看git仓库大小  
 打开网页 https://api.github.com/repos/solairewrite/UE4Mix_lfs  
++ git pull 总是失败  
+  修改 C:\Windows\System32\drivers\etc\host,删除关于 git 的行  
+
 ### git lfs 大文件存储
 #### 提交
 + 查看 lfs 版本  
