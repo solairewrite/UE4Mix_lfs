@@ -25,3 +25,13 @@ void ACommandManager::Tick(float DeltaTime)
 
 }
 
+void ACommandManager::OnActionSuccess(AAIAction* inAction)
+{
+
+}
+
+void ACommandManager::OnActionFail(AAIAction* inAction)
+{
+
+}
+
