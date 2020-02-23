@@ -30,26 +30,26 @@ AAICharacter_Fox::AAICharacter_Fox()
 	AIControllerClass = AAIController_Fox::StaticClass();
 }
 
-void AAICharacter_Fox::BeginPlay()
-{
-	Super::BeginPlay();
+//void AAICharacter_Fox::BeginPlay()
+//{
+//	Super::BeginPlay();
+//
+//	GetCharacterMovement()->MaxWalkSpeed = FoxMaxWalkSpeed;
+//
+//	FoxPlayer = UGameplayStatics::GetPlayerCharacter(this, 0);
+//
+//	GetWorldTimerManager().SetTimer(FoxTH_RefreshPath, this, &AAICharacter_Fox::FoxRefreshPath, FoxRefreshPathInterval, true);
+//}
 
-	GetCharacterMovement()->MaxWalkSpeed = FoxMaxWalkSpeed;
-
-	FoxPlayer = UGameplayStatics::GetPlayerCharacter(this, 0);
-
-	GetWorldTimerManager().SetTimer(FoxTH_RefreshPath, this, &AAICharacter_Fox::FoxRefreshPath, FoxRefreshPathInterval, true);
-}
-
-void AAICharacter_Fox::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-	if (FoxPlayer && GetHorizontalDistanceTo(FoxPlayer) > FoxMeleeRange)
-	{
-		FoxMoveToPlayer(DeltaTime);
-	}
-}
+//void AAICharacter_Fox::Tick(float DeltaTime)
+//{
+//	Super::Tick(DeltaTime);
+//
+//	if (FoxPlayer && GetHorizontalDistanceTo(FoxPlayer) > FoxMeleeRange)
+//	{
+//		FoxMoveToPlayer(DeltaTime);
+//	}
+//}
 
 FVector AAICharacter_Fox::FoxGetNextPathPoint()
 {

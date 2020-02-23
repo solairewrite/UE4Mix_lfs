@@ -4,9 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "AIControllerBase.h"
 #include "AICommand.generated.h"
 
-class AAIControllerBase;
+//class AAIControllerBase;
 class AAIAction;
 
 UENUM()
@@ -56,6 +57,8 @@ protected:
 
 	// 拥有这个命令的AIController
 	AAIControllerBase* OwnerController;
+	template<class T>
+	T* GetCharacter();
 
 	// 拥有这个命令的AIAction
 	AAIAction* OwnerAction;
@@ -64,6 +67,7 @@ public:
 	// 初始化命令,在Action中注册
 	void InitCommand(AAIControllerBase* inController, AAIAction* inAction, EDoWhatOnLastCommandFail inDoWhatOnLastCommandFail);
 
+	// 设置Character的当前Command,并应该调用相应的函数
 	virtual void StartCommand();
 
 	// 设置命令状态,触发新状态对应的函数
@@ -80,3 +84,13 @@ public:
 	virtual void CommandFail();
 
 };
+
+template<class T>
+T* AAICommand::GetCharacter()
+{
+	if (OwnerController)
+	{
+		return Cast<T>(OwnerController->GetCharacter());
+	}
+	return nullptr;
+}

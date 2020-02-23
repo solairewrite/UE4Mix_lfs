@@ -9,6 +9,7 @@
 class AAIControllerBase;
 class ACommandManager;
 class AAICommand;
+enum class EDoWhatOnLastCommandFail :uint8;
 
 UENUM()
 enum class EActionState :uint8
@@ -28,8 +29,8 @@ UCLASS()
 class UE4MIX_API AAIAction : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	AAIAction();
 
@@ -37,7 +38,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -61,7 +62,7 @@ public:
 
 	// 设置命令列表,开启第一个命令
 	void StartAction();
-	
+
 	// StartAction()中调用,将Action所需的所有命令存入CommandArr
 	virtual void SetCommandArray();
 
@@ -78,6 +79,11 @@ public:
 
 
 protected:
+	// 创建命令,并加入CommandArr
+	// 如果命令需要传参,需要额外调用函数
+	template<class T>
+	T* AddCommand(EDoWhatOnLastCommandFail inDoWhatOnLastCommandFail);
+
 	AAICommand* GetNextCommand();
 
 	virtual void ActionSuccess();
@@ -85,3 +91,21 @@ protected:
 	virtual void ActionFail();
 
 };
+
+template<class T>
+T* AAIAction::AddCommand(EDoWhatOnLastCommandFail inDoWhatOnLastCommandFail)
+{
+	static_assert(std::is_base_of<AAICommand, T>::value, "T应该是AAICommand的子类");
+
+	FActorSpawnParameters spawnPara;
+	spawnPara.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	AAICommand* cmd = GetWorld()->SpawnActor<AAICommand>(T::StaticClass(), FVector::ZeroVector, FRotator::ZeroRotator, spawnPara);
+
+	if (cmd)
+	{
+		cmd->InitCommand(OwnerController, this, inDoWhatOnLastCommandFail);
+		CommandArr.Add(cmd);
+	}
+
+	return Cast<T>(cmd);
+}

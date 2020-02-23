@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -15,5 +15,7 @@ class UE4MIX_API AAIController_Fox : public AAIControllerBase
 	GENERATED_BODY()
 	
 public:
+	AAIController_Fox();
+
 	virtual void BeginPlay() override;
 };

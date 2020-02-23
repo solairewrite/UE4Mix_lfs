@@ -20,11 +20,11 @@ class UE4MIX_API AAICharacter_Fox : public AAICharacterBase
 public:
 	AAICharacter_Fox();
 
-protected:
-	virtual void BeginPlay() override;
-
-public:
-	virtual void Tick(float DeltaTime) override;
+//protected:
+//	virtual void BeginPlay() override;
+//
+//public:
+//	virtual void Tick(float DeltaTime) override;
 
 protected:
 	// AI寻路的目标位置
