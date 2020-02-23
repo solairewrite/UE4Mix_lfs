@@ -26,23 +26,35 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason);
+
 protected:
-	AAIControllerBase* Controller;
+	AAIControllerBase* OwnerController;
 
 	TArray<AAIAction*> ActionArr;
 	AAIAction* CurrentAction;
 	int CurrentActionIndex;
 
 public:
-	void SetActionArray();
+	void Init(AAIControllerBase* inController);
 
+	// 设置Action列表,开启第一个Action
 	void StartAction();
 
-	void StartNextAction();
+	// StartAction()中调用,将所有Action存入ActionArr
+	virtual void SetActionArray();
 
-	void GetNextAction();
+	void StartNextAction();
 
 	void OnActionSuccess(AAIAction* inAction);
 
 	void OnActionFail(AAIAction* inAction);
+
+protected:
+	// 创建指定类型的Action,加到ActionArr中
+	void AddAction(TSubclassOf<AAIAction> inActionClass);
+
+	int GetNextActionIndex();
+	AAIAction* GetNextAction();
+
 };

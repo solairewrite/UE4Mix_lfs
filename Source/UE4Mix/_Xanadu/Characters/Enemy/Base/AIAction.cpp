@@ -66,14 +66,7 @@ void AAIAction::StartAction()
 
 void AAIAction::SetCommandArray()
 {
-	for (AAICommand* cmd : CommandArr)
-	{
-		if (cmd)
-		{
-			cmd->Destroy();
-		}
-	}
-	CommandArr.Empty();
+
 }
 
 void AAIAction::SetActionState(EActionState inState)
@@ -172,10 +165,7 @@ AAICommand* AAIAction::GetNextCommand()
 	if (CurrentCommandIndex < CommandArr.Num() - 1)
 	{
 		int nextIndex = CurrentCommandIndex + 1;
-		if (CommandArr[nextIndex])
-		{
-			return CommandArr[nextIndex];
-		}
+		return CommandArr[nextIndex];
 	}
 	return nullptr;
 }
