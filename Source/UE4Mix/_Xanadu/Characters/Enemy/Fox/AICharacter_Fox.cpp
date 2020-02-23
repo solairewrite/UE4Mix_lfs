@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "AICharacter_Fox.h"
@@ -10,21 +10,21 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "AIController_Fox.h"
 
-static int32 DebugLevel;
-FAutoConsoleVariableRef CVARDebugLevel(
-	TEXT("DebugLevel"),
-	DebugLevel,
-	TEXT("调试等级,控制是否显示调试球等,数值越大,能显示的越多"),
-	ECVF_Cheat
-);
+//static int32 DebugLevel;
+//FAutoConsoleVariableRef CVARDebugLevel(
+//	TEXT("DebugLevel"),
+//	DebugLevel,
+//	TEXT("调试等级,控制是否显示调试球等,数值越大,能显示的越多"),
+//	ECVF_Cheat
+//);
 
 AAICharacter_Fox::AAICharacter_Fox()
 {
-	MeleeRange = 250.0f;
-	TargetLocInterpSpeed = 1.0f;
-	AccelerateSpeed = 500.0f;
-	MaxWalkSpeed = 300.0f;
-	RefreshPathInterval = 0.3f;
+	FoxMeleeRange = 250.0f;
+	FoxTargetLocInterpSpeed = 1.0f;
+	FoxAccelerateSpeed = 500.0f;
+	FoxMaxWalkSpeed = 300.0f;
+	FoxRefreshPathInterval = 0.3f;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 
 	AIControllerClass = AAIController_Fox::StaticClass();
@@ -34,29 +34,29 @@ void AAICharacter_Fox::BeginPlay()
 {
 	Super::BeginPlay();
 
-	GetCharacterMovement()->MaxWalkSpeed = MaxWalkSpeed;
+	GetCharacterMovement()->MaxWalkSpeed = FoxMaxWalkSpeed;
 
-	Player = UGameplayStatics::GetPlayerCharacter(this, 0);
+	FoxPlayer = UGameplayStatics::GetPlayerCharacter(this, 0);
 
-	GetWorldTimerManager().SetTimer(TH_RefreshPath, this, &AAICharacter_Fox::RefreshPath, RefreshPathInterval, true);
+	GetWorldTimerManager().SetTimer(FoxTH_RefreshPath, this, &AAICharacter_Fox::FoxRefreshPath, FoxRefreshPathInterval, true);
 }
 
 void AAICharacter_Fox::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (Player && GetHorizontalDistanceTo(Player) > MeleeRange)
+	if (FoxPlayer && GetHorizontalDistanceTo(FoxPlayer) > FoxMeleeRange)
 	{
-		MoveToPlayer(DeltaTime);
+		FoxMoveToPlayer(DeltaTime);
 	}
 }
 
-FVector AAICharacter_Fox::GetNextPathPoint()
+FVector AAICharacter_Fox::FoxGetNextPathPoint()
 {
-	UNavigationPath* NavPath = UNavigationSystemV1::FindPathToActorSynchronously(this, GetActorLocation(), Player);
+	UNavigationPath* NavPath = UNavigationSystemV1::FindPathToActorSynchronously(this, GetActorLocation(), FoxPlayer);
 
 	// 绘制路径点
-	DebugDrawPath(NavPath);
+	FoxDebugDrawPath(NavPath);
 
 	if (NavPath && NavPath->PathPoints.Num() > 1)
 	{
@@ -67,30 +67,30 @@ FVector AAICharacter_Fox::GetNextPathPoint()
 	return GetActorLocation();
 }
 
-void AAICharacter_Fox::RefreshPath()
+void AAICharacter_Fox::FoxRefreshPath()
 {
-	NextPathPoint = GetNextPathPoint();
+	FoxNextPathPoint = FoxGetNextPathPoint();
 }
 
-void AAICharacter_Fox::MoveToPlayer(float DeltaTime)
+void AAICharacter_Fox::FoxMoveToPlayer(float DeltaTime)
 {
-	TargetLoc = FMath::VInterpTo(TargetLoc, NextPathPoint, DeltaTime, TargetLocInterpSpeed);
-	FVector dir = TargetLoc - GetActorLocation();
+	FoxTargetLoc = FMath::VInterpTo(FoxTargetLoc, FoxNextPathPoint, DeltaTime, FoxTargetLocInterpSpeed);
+	FVector dir = FoxTargetLoc - GetActorLocation();
 	dir.Normalize();
-	GetCharacterMovement()->AddInputVector(dir * AccelerateSpeed * DeltaTime);
+	GetCharacterMovement()->AddInputVector(dir * FoxAccelerateSpeed * DeltaTime);
 
-	if (DebugLevel > 0)
-	{
-		DrawDebugSphere(GetWorld(), TargetLoc, 10.0f, 12, FColor::Red, false, 1, 0, 1);
-	}
+	//if (DebugLevel > 0)
+	//{
+		DrawDebugSphere(GetWorld(), FoxTargetLoc, 10.0f, 12, FColor::Red, false, 1, 0, 1);
+	//}
 }
 
-void AAICharacter_Fox::DebugDrawPath(UNavigationPath* inPath)
+void AAICharacter_Fox::FoxDebugDrawPath(UNavigationPath* inPath)
 {
-	if (DebugLevel <= 0)
-	{
-		return;
-	}
+	//if (DebugLevel <= 0)
+	//{
+	//	return;
+	//}
 	if (!inPath)
 	{
 		return;

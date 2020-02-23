@@ -14,4 +14,6 @@ class UE4MIX_API AAction_Melee : public AAIAction
 {
 	GENERATED_BODY()
 	
+public:
+	virtual void SetCommandArray() override;
 };

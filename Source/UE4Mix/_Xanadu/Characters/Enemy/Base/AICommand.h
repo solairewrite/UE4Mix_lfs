@@ -73,8 +73,6 @@ public:
 
 	EDoWhatOnLastCommandFail GetDoWhatOnLastCommandFail();
 
-protected:
-
 	// 命令成功,触发Action执行下一条命令
 	virtual void CommandSuccess();
 

@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -29,31 +29,31 @@ public:
 protected:
 	// AI寻路的目标位置
 	// 防止由于路径点更新较慢,AI旋转卡顿
-	FVector TargetLoc;
+	FVector FoxTargetLoc;
 	// 寻路的目标位置差值到路径点的速度
 	UPROPERTY(EditDefaultsOnly, Category = "Movement")
-		float TargetLocInterpSpeed;
+		float FoxTargetLocInterpSpeed;
 
-	FVector NextPathPoint;
-	FVector GetNextPathPoint();
+	FVector FoxNextPathPoint;
+	FVector FoxGetNextPathPoint();
 
-	FTimerHandle TH_RefreshPath;
+	FTimerHandle FoxTH_RefreshPath;
 	UPROPERTY(EditDefaultsOnly, Category = "Movement")
-		float RefreshPathInterval;
-	void RefreshPath();
+		float FoxRefreshPathInterval;
+	void FoxRefreshPath();
 
-	void MoveToPlayer(float DeltaTime);
+	void FoxMoveToPlayer(float DeltaTime);
 
-	void DebugDrawPath(UNavigationPath* inPath);
-
-	UPROPERTY(EditDefaultsOnly, Category = "Movement")
-		float MaxWalkSpeed;
+	void FoxDebugDrawPath(UNavigationPath* inPath);
 
 	UPROPERTY(EditDefaultsOnly, Category = "Movement")
-		float AccelerateSpeed;
+		float FoxMaxWalkSpeed;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Movement")
-		float MeleeRange;
+		float FoxAccelerateSpeed;
 
-	ACharacter* Player;
+	UPROPERTY(EditDefaultsOnly, Category = "Movement")
+		float FoxMeleeRange;
+
+	ACharacter* FoxPlayer;
 };

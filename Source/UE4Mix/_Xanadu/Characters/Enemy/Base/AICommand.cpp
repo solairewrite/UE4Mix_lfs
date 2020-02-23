@@ -3,6 +3,8 @@
 
 #include "AICommand.h"
 #include "AIAction.h"
+#include "AICharacterBase.h"
+#include "AIControllerBase.h"
 
 // Sets default values
 AAICommand::AAICommand()
@@ -36,7 +38,19 @@ void AAICommand::InitCommand(AAIControllerBase* inController, AAIAction* inActio
 
 void AAICommand::StartCommand()
 {
-	SetCommandState(ECommandState::Doing);
+	if (OwnerController != nullptr)
+	{
+		AAICharacterBase* character = Cast<AAICharacterBase>(OwnerController->GetCharacter());
+
+		if (character != nullptr)
+		{
+			// 将当前命令存于AI中,方便执行命令成功的回调函数
+			character->SetCurrentCommand(this);
+			
+			SetCommandState(ECommandState::Doing);
+		}
+	}
+	
 }
 
 void AAICommand::SetCommandState(ECommandState inState)
