@@ -2,7 +2,7 @@
 
 
 #include "Cmd_MoveToPlayer.h"
-#include "AICharacterBase.h"
+#include "../Base/AICharacterBase.h"
 
 void ACmd_MoveToPlayer::StartCommand()
 {

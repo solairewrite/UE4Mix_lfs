@@ -4,7 +4,7 @@
 #include "CommandManager.h"
 #include "AIAction.h"
 #include "Engine/World.h"
-#include "Action_Melee.h"
+#include "../BaseCommand/Action_Melee.h"
 
 // Sets default values
 ACommandManager::ACommandManager()

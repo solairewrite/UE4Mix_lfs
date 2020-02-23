@@ -2,7 +2,7 @@
 
 
 #include "Cmd_Melee.h"
-#include "AICharacterBase.h"
+#include "../Base/AICharacterBase.h"
 
 void ACmd_Melee::StartCommand()
 {
