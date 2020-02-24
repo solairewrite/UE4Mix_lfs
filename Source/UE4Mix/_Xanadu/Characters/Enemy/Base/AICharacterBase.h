@@ -50,6 +50,9 @@ protected:
 
 	// Tick()中决定是否移动到玩家
 	bool bMovingToPlayer;
+	// Tick()中决定是否转向玩家
+	bool bTurningToPlayer;
+
 	// AI移动的目标位置,是两次寻路位置的差值
 	// 防止突然改变目标位置造成的训传卡顿
 	FVector TargetLoc;
@@ -69,14 +72,19 @@ protected:
 
 	void TickMoveToPlayer(float DeltaTime);
 
+	void TickTurnToPlayer(float DeltaTime);
+
 public:
 	void SetCurrentCommand(AAICommand* inCommand);
 
+	// 当前任务成功
 	void CommandSuccess();
 
+	// 当前任务失败
 	void CommandFail();
 
 	void MoveToPlayer();
 
+	void TurnToPlayer();
 
 };

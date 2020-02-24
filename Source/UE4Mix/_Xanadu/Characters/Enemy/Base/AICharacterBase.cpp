@@ -9,6 +9,7 @@
 #include "NavigationPath.h"
 #include "NavigationSystem.h"
 #include "AICommand.h"
+#include "Kismet/KismetMathLibrary.h"
 
 static int32 DebugLevel;
 FAutoConsoleVariableRef CVARDebugLevel(
@@ -52,6 +53,12 @@ void AAICharacterBase::Tick(float DeltaTime)
 	if (bMovingToPlayer)
 	{
 		TickMoveToPlayer(DeltaTime);
+	}
+
+	// 转向玩家
+	if (bTurningToPlayer)
+	{
+		TickTurnToPlayer(DeltaTime);
 	}
 }
 
@@ -108,7 +115,7 @@ void AAICharacterBase::TickMoveToPlayer(float DeltaTime)
 	if (!player)
 	{
 		bMovingToPlayer = false;
-		
+
 		// 移动到玩家失败
 		CommandFail();
 	}
@@ -127,8 +134,40 @@ void AAICharacterBase::TickMoveToPlayer(float DeltaTime)
 	}
 	else
 	{
-		bMovingToPlayer = true;
+		bMovingToPlayer = false;
 		// 移动到玩家成功
+		CommandSuccess();
+	}
+}
+
+void AAICharacterBase::TickTurnToPlayer(float DeltaTime)
+{
+	ACharacter* player = GetPlayer();
+	if (!player)
+	{
+		bTurningToPlayer = false;
+		CommandFail();
+	}
+
+	// 计算旋转
+	FRotator tLookAtPlayerRot = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), player->GetActorLocation());
+
+	if (GetDistanceTo(player) > MeleeRange)
+	{
+		// 移动到玩家的算法
+		TargetLoc = FMath::VInterpTo(TargetLoc, NextPathPoint, DeltaTime, TargetLocInterpSpeed);
+		FVector dir = TargetLoc - GetActorLocation();
+		dir.Normalize();
+		GetCharacterMovement()->AddInputVector(dir * AccelerateSpeed * DeltaTime);
+
+		if (DebugLevel > 0)
+		{
+			DrawDebugSphere(GetWorld(), TargetLoc, 10.0f, 12, FColor::Red, false, 1.0f, 0, 1.0f);
+		}
+	}
+	else
+	{
+		bTurningToPlayer = false;
 		CommandSuccess();
 	}
 }
@@ -140,7 +179,7 @@ void AAICharacterBase::SetCurrentCommand(AAICommand* inCommand)
 
 void AAICharacterBase::CommandSuccess()
 {
-	if (CurrentCommand && 
+	if (CurrentCommand &&
 		CurrentCommand->GetCommandState() == ECommandState::Doing)
 	{
 		CurrentCommand->CommandSuccess();
@@ -158,10 +197,16 @@ void AAICharacterBase::CommandFail()
 
 void AAICharacterBase::MoveToPlayer()
 {
-	// Tick中开始移动到玩家
+	// Tick()中开始移动到玩家
 	bMovingToPlayer = true;
 
 	GetWorldTimerManager().ClearTimer(TH_RefreshPath);
 	GetWorldTimerManager().SetTimer(TH_RefreshPath, this, &AAICharacterBase::RefreshPath, RefreshPathInterval, true);
+}
+
+void AAICharacterBase::TurnToPlayer()
+{
+	// Tick()中开始转向玩家
+	bTurningToPlayer = true;
 }
 
