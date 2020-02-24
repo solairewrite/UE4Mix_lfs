@@ -11,6 +11,14 @@ class ACharacter;
 class UNavigationPath;
 class AAICommand;
 
+UENUM(BlueprintType)
+enum class ERotateDirection :uint8
+{
+	None,
+	Left,
+	Right,
+};
+
 UCLASS()
 class UE4MIX_API AAICharacterBase : public ACharacter
 {
@@ -36,6 +44,9 @@ protected:
 		float AccelerateSpeed;
 
 	UPROPERTY(EditDefaultsOnly, Category = "AICharacter")
+		float RotateSpeed;
+
+	UPROPERTY(EditDefaultsOnly, Category = "AICharacter")
 		float MeleeRange;
 
 	// TODO 新建Player基类
@@ -51,7 +62,11 @@ protected:
 	// Tick()中决定是否移动到玩家
 	bool bMovingToPlayer;
 	// Tick()中决定是否转向玩家
-	bool bTurningToPlayer;
+	UPROPERTY(BlueprintReadOnly, Category = "AICharacter")
+		bool bTurningToPlayer;
+
+	UPROPERTY(BlueprintReadOnly, Category = "AICharacter")
+		ERotateDirection RotateDirection;
 
 	// AI移动的目标位置,是两次寻路位置的差值
 	// 防止突然改变目标位置造成的训传卡顿
@@ -70,9 +85,15 @@ protected:
 
 	void DebugDrawPath(UNavigationPath* inPath);
 
+	void DebugDrawRotateInfo(ACharacter* inPlayer);
+
 	void TickMoveToPlayer(float DeltaTime);
 
 	void TickTurnToPlayer(float DeltaTime);
+
+	// 计算旋转方向,向右旋转(顺时针)增加Yaw值,返回+1
+	// 向左旋转(逆时针)减少Yaw值,返回-1
+	int CalcRotateDirection(FRotator inRotator);
 
 public:
 	void SetCurrentCommand(AAICommand* inCommand);

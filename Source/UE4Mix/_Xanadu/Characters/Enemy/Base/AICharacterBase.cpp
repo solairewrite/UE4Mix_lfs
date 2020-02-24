@@ -28,6 +28,8 @@ AAICharacterBase::AAICharacterBase()
 	MaxWalkSpeed = 300.0f;
 	AccelerateSpeed = 500.0f;
 
+	RotateSpeed = 120.0f;
+
 	MeleeRange = 250.0f;
 
 	TargetLocInterpSpeed = 2.0f;
@@ -109,6 +111,19 @@ void AAICharacterBase::DebugDrawPath(UNavigationPath* inPath)
 	}
 }
 
+void AAICharacterBase::DebugDrawRotateInfo(ACharacter* inPlayer)
+{
+	FVector lineStart = GetActorLocation();
+	FVector forwardLineEnd = lineStart + GetActorForwardVector() * 250.0f;
+
+	FVector tDir = inPlayer->GetActorLocation() - GetActorLocation();
+	tDir.Normalize();
+	FVector targetLineEnd = lineStart + tDir * 250.0f;
+
+	DrawDebugLine(GetWorld(), lineStart, forwardLineEnd, FColor::Orange, false, 1.0f, 0, 1.0f);
+	DrawDebugLine(GetWorld(), lineStart, targetLineEnd, FColor::Green, false, 1.0f, 0, 1.0f);
+}
+
 void AAICharacterBase::TickMoveToPlayer(float DeltaTime)
 {
 	ACharacter* player = GetPlayer();
@@ -149,20 +164,33 @@ void AAICharacterBase::TickTurnToPlayer(float DeltaTime)
 		CommandFail();
 	}
 
-	// 计算旋转
-	FRotator tLookAtPlayerRot = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), player->GetActorLocation());
+	// 计算旋转,下面的计算基于,假设Yaw的取值范围是[0,360]
+	FRotator tLookAtPlayerRot = UKismetMathLibrary::FindLookAtRotation(
+		GetActorLocation(), player->GetActorLocation());
+	tLookAtPlayerRot.Roll = 0;
+	tLookAtPlayerRot.Pitch = 0;
 
-	if (GetDistanceTo(player) > MeleeRange)
+	// 计算旋转方向,向右旋转(顺时针)增加Yaw值
+	// 向左旋转(逆时针)减少Yaw值
+	int addRotDirection = CalcRotateDirection(tLookAtPlayerRot);
+	// 计算锐角夹角[0,180)
+	float YawDelta = FMath::Abs(GetActorRotation().Yaw - tLookAtPlayerRot.Yaw);
+	if (YawDelta >= 180.0f)
 	{
-		// 移动到玩家的算法
-		TargetLoc = FMath::VInterpTo(TargetLoc, NextPathPoint, DeltaTime, TargetLocInterpSpeed);
-		FVector dir = TargetLoc - GetActorLocation();
-		dir.Normalize();
-		GetCharacterMovement()->AddInputVector(dir * AccelerateSpeed * DeltaTime);
+		YawDelta -= 180.0f;
+	}
+
+	// 判断是否已经朝向玩家
+	float YawThreshold = 15.0f;
+	if (YawDelta > YawThreshold)
+	{
+		float tYaw = RotateSpeed * addRotDirection * DeltaTime;
+		tYaw += GetActorRotation().Yaw;
+		SetActorRotation(FRotator(0, tYaw, 0));
 
 		if (DebugLevel > 0)
 		{
-			DrawDebugSphere(GetWorld(), TargetLoc, 10.0f, 12, FColor::Red, false, 1.0f, 0, 1.0f);
+			DebugDrawRotateInfo(player);
 		}
 	}
 	else
@@ -170,6 +198,34 @@ void AAICharacterBase::TickTurnToPlayer(float DeltaTime)
 		bTurningToPlayer = false;
 		CommandSuccess();
 	}
+}
+
+// 向右旋转(顺时针)增加Yaw值,返回+1
+// 向左旋转(逆时针)减少Yaw值,返回-1
+int AAICharacterBase::CalcRotateDirection(FRotator inRotator)
+{
+	int addRotDirection = 0;
+	float YawDelta = FMath::Abs(GetActorRotation().Yaw - inRotator.Yaw);
+	if (YawDelta < 180.0f)
+	{
+		addRotDirection = (inRotator.Yaw > GetActorRotation().Yaw) ? 1 : -1;
+	}
+	else
+	{
+		addRotDirection = (inRotator.Yaw > GetActorRotation().Yaw) ? -1 : 1;
+	}
+
+	RotateDirection = ERotateDirection::None;
+	if (addRotDirection == 1)
+	{
+		RotateDirection = ERotateDirection::Right;
+	}
+	else if (addRotDirection == -1)
+	{
+		RotateDirection = ERotateDirection::Left;
+	}
+
+	return addRotDirection;
 }
 
 void AAICharacterBase::SetCurrentCommand(AAICommand* inCommand)

@@ -14,4 +14,6 @@ class UE4MIX_API ACmd_TurnToPlayer : public AAICommand
 {
 	GENERATED_BODY()
 	
+public:
+	virtual void StartCommand();
 };
