@@ -7,6 +7,7 @@
 #include "AIControllerBase.generated.h"
 
 class ACommandManager;
+class AAIAnimManager;
 
 /**
  * 
@@ -20,10 +21,16 @@ protected:
 	TSubclassOf<ACommandManager> CommandManagerClass;
 	ACommandManager* CommandManager;
 
+	AAIAnimManager* AnimManager;
+
 public:
 	virtual void BeginPlay() override;
+
+	void InitAnimManager();
 
 	void InitCommandManager();
 
 	void StartCommand();
+
+	void PlayAnim(FName inAnimName);
 };

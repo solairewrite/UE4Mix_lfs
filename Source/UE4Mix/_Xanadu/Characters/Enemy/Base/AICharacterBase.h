@@ -95,6 +95,10 @@ protected:
 	// 向左旋转(逆时针)减少Yaw值,返回-1
 	int CalcRotateDirection(FRotator inRotator);
 
+	// 动画名称和资源Map
+	UPROPERTY(EditAnywhere, Category = "Anim")
+		TMap<FName, UAnimSequenceBase*> AnimMap;
+
 public:
 	void SetCurrentCommand(AAICommand* inCommand);
 
@@ -107,5 +111,8 @@ public:
 	void MoveToPlayer();
 
 	void TurnToPlayer();
+
+	// 根据AnimSequence,动态播放Montage,返回动画时长
+	float PlayAnim(FName inAnimName);
 
 };

@@ -10,6 +10,8 @@
 #include "NavigationSystem.h"
 #include "AICommand.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "Animation/AnimInstance.h"
 
 static int32 DebugLevel;
 FAutoConsoleVariableRef CVARDebugLevel(
@@ -264,5 +266,38 @@ void AAICharacterBase::TurnToPlayer()
 {
 	// Tick()中开始转向玩家
 	bTurningToPlayer = true;
+}
+
+float AAICharacterBase::PlayAnim(FName inAnimName)
+{
+	if (!AnimMap.Contains(inAnimName))
+	{
+		return 0;
+	}
+	UAnimSequenceBase* seq = AnimMap[inAnimName];
+	if (!seq)
+	{
+		return 0;
+	}
+
+	USkeletalMeshComponent* mesh = FindComponentByClass<USkeletalMeshComponent>();
+	if (!mesh)
+	{
+		return 0;
+	}
+
+	UAnimInstance* animInst = mesh->GetAnimInstance();
+	if (!animInst)
+	{
+		return 0;
+	}
+
+	UAnimMontage* montage = animInst->PlaySlotAnimationAsDynamicMontage(seq, TEXT("DefaultSlot"));
+	if (!montage)
+	{
+		return 0;
+	}
+	float animLength = montage->GetPlayLength();
+	return animLength;
 }
 

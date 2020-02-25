@@ -57,6 +57,7 @@ protected:
 
 	// 拥有这个命令的AIController
 	AAIControllerBase* OwnerController;
+
 	template<class T>
 	T* GetCharacter();
 
