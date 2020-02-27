@@ -230,6 +230,24 @@ int AAICharacterBase::CalcRotateDirection(FRotator inRotator)
 	return addRotDirection;
 }
 
+void AAICharacterBase::OnAnimMontageEnd(UAnimMontage* inMontage, bool bInterrupted)
+{
+	AAIControllerBase* controller = GetController<AAIControllerBase>();
+	if (!controller)
+	{
+		return;
+	}
+
+	if (MontageNameMap.Contains(inMontage))
+	{
+		FName animName = MontageNameMap[inMontage];
+		if (!animName.IsNone())
+		{
+			controller->OnPlayAnimSuccess(animName);
+		}
+	}
+}
+
 void AAICharacterBase::SetCurrentCommand(AAICommand* inCommand)
 {
 	CurrentCommand = inCommand;
@@ -237,6 +255,8 @@ void AAICharacterBase::SetCurrentCommand(AAICommand* inCommand)
 
 void AAICharacterBase::CommandSuccess()
 {
+	MontageNameMap.Empty();
+
 	if (CurrentCommand &&
 		CurrentCommand->GetCommandState() == ECommandState::Doing)
 	{
@@ -246,6 +266,8 @@ void AAICharacterBase::CommandSuccess()
 
 void AAICharacterBase::CommandFail()
 {
+	MontageNameMap.Empty();
+
 	if (CurrentCommand &&
 		CurrentCommand->GetCommandState() == ECommandState::Doing)
 	{
@@ -297,6 +319,12 @@ float AAICharacterBase::PlayAnim(FName inAnimName)
 	{
 		return 0;
 	}
+	MontageNameMap.Add(montage, inAnimName);
+	
+	// 添加代理,动画结束回调
+	animInst->OnMontageEnded.Clear();
+	animInst->OnMontageEnded.AddDynamic(this, &AAICharacterBase::OnAnimMontageEnd);
+
 	float animLength = montage->GetPlayLength();
 	return animLength;
 }

@@ -8,6 +8,7 @@
 
 class ACommandManager;
 class AAIAnimManager;
+class AAICommand;
 
 /**
  * 
@@ -32,5 +33,12 @@ public:
 
 	void StartCommand();
 
+	// PlayAnim()前必须调用PrepareForPlayAnim()
+	void PrepareForPlayAnim(AAICommand* inCommand);
+
 	void PlayAnim(FName inAnimName);
+
+	void OnPlayAnimSuccess(FName inAnimName);
+
+	void OnPlayAnimFail(FName inAnimName);
 };

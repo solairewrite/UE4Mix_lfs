@@ -5,6 +5,7 @@
 #include "CommandManager.h"
 #include "Engine/World.h"
 #include "AIAnimManager.h"
+#include "AICommand.h"
 
 void AAIControllerBase::BeginPlay()
 {
@@ -55,10 +56,31 @@ void AAIControllerBase::StartCommand()
 	}
 }
 
+void AAIControllerBase::PrepareForPlayAnim(AAICommand* inCommand)
+{
+	if (AnimManager)
+	{
+		AnimManager->InitCommand(inCommand);
+	}
+}
+
 void AAIControllerBase::PlayAnim(FName inAnimName)
 {
 	if (AnimManager)
 	{
 		AnimManager->PlayAnim(inAnimName);
 	}
+}
+
+void AAIControllerBase::OnPlayAnimSuccess(FName inAnimName)
+{
+	if (AnimManager)
+	{
+		AnimManager->OnPlayAnimSuccess(inAnimName);
+	}
+}
+
+void AAIControllerBase::OnPlayAnimFail(FName inAnimName)
+{
+
 }

@@ -99,6 +99,13 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Anim")
 		TMap<FName, UAnimSequenceBase*> AnimMap;
 
+	// 已经播放的Montage和动画名Map
+	TMap<UAnimMontage*, FName> MontageNameMap;
+
+	// 动画结束回调,代理函数
+	UFUNCTION()
+		void OnAnimMontageEnd(UAnimMontage* inMontage, bool bInterrupted);
+
 public:
 	void SetCurrentCommand(AAICommand* inCommand);
 

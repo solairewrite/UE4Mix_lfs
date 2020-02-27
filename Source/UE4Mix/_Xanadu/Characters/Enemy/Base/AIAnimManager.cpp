@@ -42,11 +42,32 @@ void AAIAnimManager::InitCommand(AAICommand* inCommand)
 
 void AAIAnimManager::PlayAnim(FName inAnimName)
 {
+	check(CurrCommand && "播放动画前需要调用InitCommand()");
+
 	AnimQueue.Add(inAnimName);
 
-	if (AnimQueue.Num() == 0)
+	if (AnimQueue.Num() == 1)
 	{
 		CurrentAnimIndex = 0;
+		PlayAnimInQueue(CurrentAnimIndex);
+	}
+}
+
+void AAIAnimManager::OnPlayAnimSuccess(FName inAnimName)
+{
+	bool bIsRightAnim = AnimQueue[CurrentAnimIndex] == inAnimName;
+	// 断言
+	check(bIsRightAnim && "动画名称和索引不对应");
+
+	// 最后一条动画
+	if (CurrentAnimIndex >= AnimQueue.Num() - 1)
+	{
+		OnCommandSuccess();
+		ResetAnimManager();
+	}
+	else
+	{
+		CurrentAnimIndex++;
 		PlayAnimInQueue(CurrentAnimIndex);
 	}
 }

@@ -46,6 +46,8 @@ public:
 	// 顺序播放动画队列中的动画,直到最后一个动画播放完,当前命令成功
 	void PlayAnim(FName inAnimName);
 
+	void OnPlayAnimSuccess(FName inAnimMane);
+
 protected:
 	AAICharacterBase* GetCharacter();
 

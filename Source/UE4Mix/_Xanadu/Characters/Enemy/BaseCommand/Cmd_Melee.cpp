@@ -10,6 +10,7 @@ void ACmd_Melee::StartCommand()
 
 	if (OwnerController)
 	{
+		OwnerController->PrepareForPlayAnim(this);
 		OwnerController->PlayAnim(TEXT("Melee"));
 	}
 }
