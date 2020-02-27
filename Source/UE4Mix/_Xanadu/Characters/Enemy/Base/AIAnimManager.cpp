@@ -4,6 +4,7 @@
 #include "AIAnimManager.h"
 #include "AIControllerBase.h"
 #include "AICharacterBase.h"
+#include "AICommand.h"
 
 // Sets default values
 AAIAnimManager::AAIAnimManager()
@@ -30,17 +31,24 @@ void AAIAnimManager::Tick(float DeltaTime)
 void AAIAnimManager::Init(AAIControllerBase* inController)
 {
 	OwnerController = inController;
+	ResetAnimManager();
 }
 
-float AAIAnimManager::PlayAnim(FName inAnimName)
+void AAIAnimManager::InitCommand(AAICommand* inCommand)
 {
-	AAICharacterBase* character = GetCharacter();
-	if (character)
+	ResetAnimManager();
+	CurrCommand = inCommand;
+}
+
+void AAIAnimManager::PlayAnim(FName inAnimName)
+{
+	AnimQueue.Add(inAnimName);
+
+	if (AnimQueue.Num() == 0)
 	{
-		float animLength = character->PlayAnim(inAnimName);
-		return animLength;
+		CurrentAnimIndex = 0;
+		PlayAnimInQueue(CurrentAnimIndex);
 	}
-	return 0;
 }
 
 AAICharacterBase* AAIAnimManager::GetCharacter()
@@ -50,5 +58,48 @@ AAICharacterBase* AAIAnimManager::GetCharacter()
 		return Cast<AAICharacterBase>(OwnerController->GetCharacter());
 	}
 	return nullptr;
+}
+
+void AAIAnimManager::PlayAnimInQueue(int32 inIndex)
+{
+	AAICharacterBase* character = GetCharacter();
+	if (!character)
+	{
+		OnCommandFail();
+		return;
+	}
+
+	if (inIndex >= AnimQueue.Num())
+	{
+		OnCommandFail();
+		return;
+	}
+	FName animName = AnimQueue[inIndex];
+	if (animName.IsNone())
+	{
+		OnCommandFail();
+		return;
+	}
+
+	character->PlayAnim(animName);
+}
+
+void AAIAnimManager::ResetAnimManager()
+{
+	CurrCommand = nullptr;
+	AnimQueue.Empty();
+	CurrentAnimIndex = 0;
+}
+
+void AAIAnimManager::OnCommandSuccess()
+{
+	CurrCommand->CommandSuccess();
+	ResetAnimManager();
+}
+
+void AAIAnimManager::OnCommandFail()
+{
+	CurrCommand->CommandFail();
+	ResetAnimManager();
 }
 
