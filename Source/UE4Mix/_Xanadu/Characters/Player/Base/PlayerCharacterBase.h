@@ -8,6 +8,7 @@
 
 class USpringArmComponent;
 class UCameraComponent;
+class UBoxComponent;
 
 UCLASS()
 class UE4MIX_API APlayerCharacterBase : public ACharacter
@@ -41,6 +42,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Anim")
 		UAnimMontage* AnimMontage_Melee;
 
+	bool bIsMeleeing;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Components")
+		UBoxComponent* MeleeBoxComp;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+		float MeleeDamage;
+
 public:
 	void MoveForward(float inValue);
 	void MoveRight(float inValue);
@@ -48,6 +57,11 @@ public:
 	virtual FVector GetPawnViewLocation() const override;
 	virtual FRotator GetViewRotation() const override;
 
+	// 近战动画通知
+	virtual void OnMelee();
+
 protected:
+	// 按下鼠标左键触发近战命令
 	virtual void Melee();
+	void OnMeleeMontageFinish();
 };

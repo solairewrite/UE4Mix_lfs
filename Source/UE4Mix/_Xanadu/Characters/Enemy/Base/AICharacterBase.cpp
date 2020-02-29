@@ -12,6 +12,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Animation/AnimInstance.h"
+#include "_Xanadu/Characters/Base/Components/HealthComponent.h"
 
 static int32 DebugLevel;
 FAutoConsoleVariableRef CVARDebugLevel(
@@ -27,17 +28,26 @@ AAICharacterBase::AAICharacterBase()
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	// 运动
 	MaxWalkSpeed = 300.0f;
 	AccelerateSpeed = 500.0f;
-
 	RotateSpeed = 120.0f;
+	GetCharacterMovement()->bOrientRotationToMovement = true;
 
-	MeleeRange = 250.0f;
-
+	// 寻路
 	TargetLocInterpSpeed = 2.0f;
 	RefreshPathInterval = 0.3f;
 
-	GetCharacterMovement()->bOrientRotationToMovement = true;
+	// 攻击
+	MeleeRange = 250.0f;
+
+	// 血量组件
+	HealthComp = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComp"));
+	if (HealthComp)
+	{
+		// 绑定代理函数,当调用OnTakeAnyDamage.Broadcast时,会触发代理函数
+		OnTakeAnyDamage.AddDynamic(HealthComp, &UHealthComponent::OnTakeDamage);
+	}
 }
 
 // Called when the game starts or when spawned
@@ -164,6 +174,7 @@ void AAICharacterBase::TickTurnToPlayer(float DeltaTime)
 	{
 		bTurningToPlayer = false;
 		CommandFail();
+		return;
 	}
 
 	// 计算旋转,下面的计算基于,假设Yaw的取值范围是[0,360]
@@ -320,12 +331,27 @@ float AAICharacterBase::PlayAnim(FName inAnimName)
 		return 0;
 	}
 	MontageNameMap.Add(montage, inAnimName);
-	
+
 	// 添加代理,动画结束回调
 	animInst->OnMontageEnded.Clear();
 	animInst->OnMontageEnded.AddDynamic(this, &AAICharacterBase::OnAnimMontageEnd);
 
 	float animLength = montage->GetPlayLength();
 	return animLength;
+}
+
+float AAICharacterBase::GetHealth_Implementation()
+{
+	if (HealthComp)
+	{
+		return HealthComp->GetHealth();
+	}
+
+	return 0.0f;
+}
+
+bool AAICharacterBase::IsAI()
+{
+	return true;
 }
 

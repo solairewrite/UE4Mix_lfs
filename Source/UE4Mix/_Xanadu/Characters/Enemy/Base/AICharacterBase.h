@@ -4,12 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "_Xanadu/Characters/Base/Interfaces/IHealth.h" // 接口必须include
 #include "AICharacterBase.generated.h"
 
 class AIControllerBase;
 class ACharacter;
 class UNavigationPath;
 class AAICommand;
+class UHealthComponent;
 
 UENUM(BlueprintType)
 enum class ERotateDirection :uint8
@@ -20,7 +22,8 @@ enum class ERotateDirection :uint8
 };
 
 UCLASS()
-class UE4MIX_API AAICharacterBase : public ACharacter
+class UE4MIX_API AAICharacterBase : public ACharacter,
+	public IIHealth
 {
 	GENERATED_BODY()
 
@@ -106,6 +109,9 @@ protected:
 	UFUNCTION()
 		void OnAnimMontageEnd(UAnimMontage* inMontage, bool bInterrupted);
 
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+		UHealthComponent* HealthComp;
+
 public:
 	void SetCurrentCommand(AAICommand* inCommand);
 
@@ -122,4 +128,7 @@ public:
 	// 根据AnimSequence,动态播放Montage,返回动画时长
 	float PlayAnim(FName inAnimName);
 
+	virtual float GetHealth_Implementation() override;
+
+	virtual bool IsAI() override;
 };
