@@ -3,6 +3,13 @@
 
 #include "PlayerCharacter_Knight.h"
 
+APlayerCharacter_Knight::APlayerCharacter_Knight()
+{
+	MeleeDamageArr[0] = 10.0f;
+	MeleeDamageArr[1] = 20.0f;
+	MeleeDamageArr[2] = 30.0f;
+}
+
 void APlayerCharacter_Knight::OnMelee1()
 {
 	DoMeleeDamage(MeleeDamageArr[0]);

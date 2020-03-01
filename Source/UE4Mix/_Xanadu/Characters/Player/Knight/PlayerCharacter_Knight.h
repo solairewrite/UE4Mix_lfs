@@ -14,6 +14,9 @@ class UE4MIX_API APlayerCharacter_Knight : public APlayerCharacterBase
 {
 	GENERATED_BODY()
 
+public:
+	APlayerCharacter_Knight();
+
 protected:
 	// 近战
 	static const int8 MaxMeleeComboCount = 3;

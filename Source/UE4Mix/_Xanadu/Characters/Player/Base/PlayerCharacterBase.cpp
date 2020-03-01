@@ -23,7 +23,7 @@ APlayerCharacterBase::APlayerCharacterBase()
 
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComp"));
 	SpringArmComp->SetRelativeLocation(FVector(0, 0, 90.0f));
-	SpringArmComp->TargetArmLength = 400.0f;
+	SpringArmComp->TargetArmLength = 500.0f;
 	SpringArmComp->bUsePawnControlRotation = true;
 	SpringArmComp->bEnableCameraLag = true; // 相机延迟移动到目标位置,以平滑移动
 	SpringArmComp->bEnableCameraRotationLag = true;
