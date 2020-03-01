@@ -63,9 +63,9 @@ void ACoopGame_ExplosiveBarrel::OnHealthChanged(UCoopGame_SHealthComponent* Owin
 		RadialForceComp->FireImpulse(); // 向周围物体施加力
 
 		// 圆形伤害
-		TSubclassOf<UDamageType> DamageType = nullptr;
+		TSubclassOf<UDamageType> tDamageType = nullptr;
 		TArray<AActor*> IgnoreActors;
-		UGameplayStatics::ApplyRadialDamage(GetWorld(), DamageAmount, GetActorLocation(), DamageRadius, DamageType, IgnoreActors, this, NULL);
+		UGameplayStatics::ApplyRadialDamage(GetWorld(), DamageAmount, GetActorLocation(), DamageRadius, tDamageType, IgnoreActors, this, NULL);
 	}
 }
 
