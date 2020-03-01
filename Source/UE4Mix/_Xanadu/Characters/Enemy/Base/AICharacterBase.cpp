@@ -290,6 +290,7 @@ void AAICharacterBase::OnAnimMontageEnd(UAnimMontage* inMontage, bool bInterrupt
 	{
 		controller->GC_CommandManager();
 		controller->GC_AnimManager();
+
 		return;
 	}
 
@@ -397,5 +398,20 @@ void AAICharacterBase::OnDead()
 	bDead = true;
 	float tAnimLength = PlayAnim("Death");
 	SetLifeSpan(tAnimLength + 1.0f);
+}
+
+void AAICharacterBase::OnDeathAnimEnd()
+{
+	// 如果是用Slot播放死亡Montage,则死亡动画结束后会回到Idle动画
+	// 暂停动画,需要在死亡AnimSequence后面加上10个空帧(30帧/s,动画淡出时间0.25s)
+	if (USkeletalMeshComponent* tMesh = GetMesh())
+	{
+		tMesh->bPauseAnims = true;
+	}
+}
+
+void AAICharacterBase::OnMelee()
+{
+
 }
 

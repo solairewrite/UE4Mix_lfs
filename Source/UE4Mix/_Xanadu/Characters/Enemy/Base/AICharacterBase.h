@@ -138,4 +138,8 @@ public:
 	virtual bool IsAI() override;
 
 	virtual void OnDead();
+
+	void OnDeathAnimEnd();
+
+	void OnMelee();
 };

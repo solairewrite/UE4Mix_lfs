@@ -15,6 +15,8 @@ class UE4MIX_API UAIAnimInstance : public UAnimInstance
 	GENERATED_BODY()
 
 public:
+	template<class T>
+	T* GetCharacter();
 
 	// 动画通知:
 	// 1,新建 MyAnimInst 继承自 UAIAnimInstance(动画蓝图)
@@ -23,4 +25,14 @@ public:
 	// 4,MyAnimInst 代码中加入动画通知函数 AnimNotify_Melee,必须以 "AnimNotify" 开头
 	UFUNCTION(BlueprintCallable, Category = "Anim")
 		virtual void AnimNotify_Melee(UAnimNotify* inNotify);
+
+	UFUNCTION(BlueprintCallable, Category = "Anim")
+		virtual void AnimNotify_DeathAnimEnd(UAnimNotify* inNotify);
 };
+
+template<class T>
+T* UAIAnimInstance::GetCharacter()
+{
+	T* character = Cast<T>(TryGetPawnOwner());
+	return character;
+}
