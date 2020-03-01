@@ -72,6 +72,11 @@ void AAICharacterBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (bDead)
+	{
+		return;
+	}
+
 	// 移动到玩家
 	if (bMovingToPlayer)
 	{
@@ -82,6 +87,18 @@ void AAICharacterBase::Tick(float DeltaTime)
 	if (bTurningToPlayer)
 	{
 		TickTurnToPlayer(DeltaTime);
+	}
+}
+
+void AAICharacterBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+	AAIControllerBase* controller = GetController<AAIControllerBase>();
+	if (controller)
+	{
+		controller->GC_CommandManager();
+		controller->GC_AnimManager();
 	}
 }
 
@@ -258,14 +275,25 @@ void AAICharacterBase::OnAnimMontageEnd(UAnimMontage* inMontage, bool bInterrupt
 		return;
 	}
 
-	if (MontageNameMap.Contains(inMontage))
+	if (!MontageNameMap.Contains(inMontage))
 	{
-		FName animName = MontageNameMap[inMontage];
-		if (!animName.IsNone())
-		{
-			controller->OnPlayAnimSuccess(animName);
-		}
+		return;
 	}
+
+	FName animName = MontageNameMap[inMontage];
+	if (animName.IsNone())
+	{
+		return;
+	}
+
+	if (animName == FName("Death"))
+	{
+		controller->GC_CommandManager();
+		controller->GC_AnimManager();
+		return;
+	}
+
+	controller->OnPlayAnimSuccess(animName);
 }
 
 void AAICharacterBase::SetCurrentCommand(AAICommand* inCommand)
@@ -362,5 +390,12 @@ float AAICharacterBase::GetHealth_Implementation()
 bool AAICharacterBase::IsAI()
 {
 	return true;
+}
+
+void AAICharacterBase::OnDead()
+{
+	bDead = true;
+	float tAnimLength = PlayAnim("Death");
+	SetLifeSpan(tAnimLength + 1.0f);
 }
 

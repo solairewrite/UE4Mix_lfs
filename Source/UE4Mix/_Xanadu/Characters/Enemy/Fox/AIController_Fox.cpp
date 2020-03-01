@@ -13,5 +13,5 @@ void AAIController_Fox::BeginPlay()
 {
 	Super::BeginPlay();
 
-	GEngine->AddOnScreenDebugMessage(0, 5.0f, FColor::Red, TEXT("AIController_Fox C++打印到屏幕"));
+	//GEngine->AddOnScreenDebugMessage(0, 5.0f, FColor::Red, TEXT("AIController_Fox C++打印到屏幕"));
 }

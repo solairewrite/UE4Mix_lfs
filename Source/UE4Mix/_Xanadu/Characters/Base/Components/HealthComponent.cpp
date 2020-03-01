@@ -2,6 +2,7 @@
 
 
 #include "HealthComponent.h"
+#include "_Xanadu/Characters/Base/Interfaces/IHealth.h"
 
 // Sets default values for this component's properties
 UHealthComponent::UHealthComponent()
@@ -40,6 +41,15 @@ void UHealthComponent::OnTakeDamage(AActor* DamagedActor, float Damage, const cl
 	}
 
 	Health = FMath::Clamp(Health - Damage, 0.0f, HealthMax);
+
+	if (Health <= 0.0f)
+	{
+		IIHealth* tHealthActor = Cast<IIHealth>(GetOwner());
+		if (tHealthActor)
+		{
+			tHealthActor->OnDead();
+		}
+	}
 }
 
 float UHealthComponent::GetHealth()

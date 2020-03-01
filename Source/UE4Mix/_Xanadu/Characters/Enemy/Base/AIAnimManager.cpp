@@ -28,6 +28,11 @@ void AAIAnimManager::Tick(float DeltaTime)
 
 }
 
+void AAIAnimManager::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+}
+
 void AAIAnimManager::Init(AAIControllerBase* inController)
 {
 	OwnerController = inController;

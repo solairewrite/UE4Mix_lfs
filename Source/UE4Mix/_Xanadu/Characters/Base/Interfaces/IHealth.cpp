@@ -14,3 +14,8 @@ bool IIHealth::IsAI()
 {
 	return false;
 }
+
+void IIHealth::OnDead()
+{
+
+}

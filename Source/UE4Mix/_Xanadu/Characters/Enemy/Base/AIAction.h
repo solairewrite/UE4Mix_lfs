@@ -56,6 +56,9 @@ protected:
 	AAICommand* LastCommand;
 	int CurrentCommandIndex;
 
+	// 是否已经设置过命令列表,防止下一次调用此Action时,多次生成命令列表
+	bool bHasSetCommandArr;
+
 public:
 	// 初始化Action,并在命令管理器中注册
 	void InitAction(AAIControllerBase* inController, ACommandManager* inManager);
@@ -89,6 +92,9 @@ protected:
 	virtual void ActionSuccess();
 
 	virtual void ActionFail();
+
+	// 对所有的Command进行垃圾回收
+	void GC_Commands();
 
 };
 

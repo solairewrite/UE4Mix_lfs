@@ -39,6 +39,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "AICharacter")
 		float MaxWalkSpeed;
@@ -112,6 +114,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 		UHealthComponent* HealthComp;
 
+	UPROPERTY(BlueprintReadOnly, Category = "AICharacter")
+		bool bDead;
+
 public:
 	void SetCurrentCommand(AAICommand* inCommand);
 
@@ -131,4 +136,6 @@ public:
 	virtual float GetHealth_Implementation() override;
 
 	virtual bool IsAI() override;
+
+	virtual void OnDead();
 };

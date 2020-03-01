@@ -31,13 +31,7 @@ void AAIAction::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
 
-	for (AAICommand* cmd : CommandArr)
-	{
-		if (cmd)
-		{
-			cmd->Destroy();
-		}
-	}
+	GC_Commands();
 }
 
 void AAIAction::InitAction(AAIControllerBase* inController, ACommandManager* inManager)
@@ -48,7 +42,13 @@ void AAIAction::InitAction(AAIControllerBase* inController, ACommandManager* inM
 
 void AAIAction::StartAction()
 {
-	SetCommandArray();
+	// 避免多次生成命令列表
+	if (!bHasSetCommandArr)
+	{
+		SetCommandArray();
+		bHasSetCommandArr = true;
+	}
+
 
 	if (CommandArr.Num() > 0 && CommandArr[0])
 	{
@@ -183,6 +183,17 @@ void AAIAction::ActionFail()
 	if (CommandManager)
 	{
 		CommandManager->OnActionFail(this);
+	}
+}
+
+void AAIAction::GC_Commands()
+{
+	for (AAICommand* cmd : CommandArr)
+	{
+		if (cmd)
+		{
+			cmd->Destroy();
+		}
 	}
 }
 

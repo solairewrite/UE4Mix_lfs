@@ -84,3 +84,19 @@ void AAIControllerBase::OnPlayAnimFail(FName inAnimName)
 {
 
 }
+
+void AAIControllerBase::GC_CommandManager()
+{
+	if (CommandManager)
+	{
+		CommandManager->Destroy();
+	}
+}
+
+void AAIControllerBase::GC_AnimManager()
+{
+	if (AnimManager)
+	{
+		AnimManager->Destroy();
+	}
+}

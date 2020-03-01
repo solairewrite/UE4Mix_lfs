@@ -32,13 +32,7 @@ void ACommandManager::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
 
-	for (AAIAction* action : ActionArr)
-	{
-		if (action)
-		{
-			action->Destroy();
-		}
-	}
+	GC_Actions();
 }
 
 void ACommandManager::Init(AAIControllerBase* inController)
@@ -131,5 +125,16 @@ AAIAction* ACommandManager::GetNextAction()
 		return ActionArr[nextIndex];
 	}
 	return nullptr;
+}
+
+void ACommandManager::GC_Actions()
+{
+	for (AAIAction* tAction : ActionArr)
+	{
+		if (tAction)
+		{
+			tAction->Destroy();
+		}
+	}
 }
 

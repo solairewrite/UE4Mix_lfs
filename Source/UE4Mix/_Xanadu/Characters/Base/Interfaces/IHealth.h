@@ -38,4 +38,6 @@ public:
 	// 普通函数可以直接调用接口
 	// bIsAI = tHealthActor->IsAI();
 	virtual bool IsAI();
+
+	virtual void OnDead();
 };

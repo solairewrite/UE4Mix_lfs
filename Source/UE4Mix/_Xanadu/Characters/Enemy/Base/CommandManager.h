@@ -57,4 +57,7 @@ protected:
 	int GetNextActionIndex();
 	AAIAction* GetNextAction();
 
+	// 对所有的Action进行垃圾回收
+	void GC_Actions();
+
 };

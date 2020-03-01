@@ -19,9 +19,11 @@ class UE4MIX_API AAIControllerBase : public AAIController
 	GENERATED_BODY()
 	
 protected:
+	// 命令管理器的类
 	TSubclassOf<ACommandManager> CommandManagerClass;
 	ACommandManager* CommandManager;
 
+	// 动画管理器
 	AAIAnimManager* AnimManager;
 
 public:
@@ -41,4 +43,9 @@ public:
 	void OnPlayAnimSuccess(FName inAnimName);
 
 	void OnPlayAnimFail(FName inAnimName);
+
+	// 对命令管理器进行垃圾回收
+	void GC_CommandManager();
+	// 对动画控制器进行垃圾回收
+	void GC_AnimManager();
 };

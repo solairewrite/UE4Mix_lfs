@@ -28,6 +28,11 @@ void AAICommand::Tick(float DeltaTime)
 
 }
 
+void AAICommand::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+}
+
 void AAICommand::InitCommand(AAIControllerBase* inController, AAIAction* inAction, EDoWhatOnLastCommandFail inDoWhatOnLastCommandFail)
 {
 	OwnerController = inController;
