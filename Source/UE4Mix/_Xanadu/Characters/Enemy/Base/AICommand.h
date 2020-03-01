@@ -15,6 +15,7 @@ enum class ECommandState :uint8
 {
 	None,
 	Doing,
+	Pause,
 	Success,
 	Fail,
 };
@@ -73,6 +74,8 @@ public:
 	// 设置Character的当前Command,并应该调用相应的函数
 	virtual void StartCommand();
 
+	virtual void ReDoCommand();
+
 	// 设置命令状态,触发新状态对应的函数
 	void SetCommandState(ECommandState inState);
 
@@ -85,6 +88,10 @@ public:
 
 	// 命令失败,触发Action根据需要执行下一条命令
 	virtual void CommandFail();
+
+	virtual void CommandPause();
+
+	virtual void CommandContinue();
 
 };
 

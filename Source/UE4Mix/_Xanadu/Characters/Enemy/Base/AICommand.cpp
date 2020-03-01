@@ -51,11 +51,17 @@ void AAICommand::StartCommand()
 		{
 			// 将当前命令存于AI中,方便执行命令成功的回调函数
 			character->SetCurrentCommand(this);
-			
+
 			SetCommandState(ECommandState::Doing);
 		}
 	}
-	
+}
+
+void AAICommand::ReDoCommand()
+{
+	// 当前已知的命令:移动,旋转,攻击
+	// 重新开始逻辑暂,和直接开始逻辑相同
+	StartCommand();
 }
 
 void AAICommand::SetCommandState(ECommandState inState)
@@ -72,6 +78,9 @@ void AAICommand::SetCommandState(ECommandState inState)
 	case ECommandState::None:
 		break;
 	case ECommandState::Doing:
+		break;
+	case ECommandState::Pause:
+		CommandPause();
 		break;
 	case ECommandState::Success:
 		CommandSuccess();
@@ -108,5 +117,15 @@ void AAICommand::CommandFail()
 	{
 		OwnerAction->OnCommandFail(this);
 	}
+}
+
+void AAICommand::CommandPause()
+{
+	CommandState = ECommandState::Pause;
+}
+
+void AAICommand::CommandContinue()
+{
+	CommandState = ECommandState::Doing;
 }
 

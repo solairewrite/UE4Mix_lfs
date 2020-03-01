@@ -40,6 +40,9 @@ protected:
 
 	AAICommand* CurrCommand;
 
+	// 暂停当前命令的动画名
+	FName PauseCommandAnimName;
+
 public:
 	void Init(AAIControllerBase* inController);
 
@@ -47,6 +50,9 @@ public:
 
 	// 顺序播放动画队列中的动画,直到最后一个动画播放完,当前命令成功
 	void PlayAnim(FName inAnimName);
+
+	// 立刻播放动画,暂停当前命令,并在动画结束之后,重新开始命令
+	void PlayAnimImmediately(FName inAnimName);
 
 	void OnPlayAnimSuccess(FName inAnimMane);
 

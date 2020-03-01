@@ -96,14 +96,23 @@ void APlayerCharacter_Knight::DoMeleeDamage(float inDamage)
 			continue;
 		}
 
-		if (tActor->GetClass()->ImplementsInterface(UIHealth::StaticClass()))
+		IIHealth* tHealthActor = Cast<IIHealth>(tActor);
+		//if (tActor->GetClass()->ImplementsInterface(UIHealth::StaticClass()))
+		if (tHealthActor)
 		{
 			tActor->TakeDamage(inDamage, FDamageEvent(), GetController(), this);
+
+			// 播放受击动画
+			if (tHealthActor->CanPlayTakeHitAnim())
+			{
+				tHealthActor->PlayTakeHitAnim();
+			}
 
 			if (CVARDebugLevel.GetValueOnGameThread() > 0)
 			{
 				FString tName = GetDebugName(tActor);
-				float health = IIHealth::Execute_GetHealth(tActor);
+				//float health = IIHealth::Execute_GetHealth(tActor);
+				float health = Cast<IIHealth>(tActor)->GetHealth();
 				FString tInfo = FString::Printf(TEXT("%s 血量: %s"), *tName, *FString::SanitizeFloat(health, 0));
 				GEngine->AddOnScreenDebugMessage(1, 3.0f, FColor::Yellow, tInfo);
 			}

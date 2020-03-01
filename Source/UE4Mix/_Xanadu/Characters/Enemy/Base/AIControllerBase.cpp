@@ -72,6 +72,14 @@ void AAIControllerBase::PlayAnim(FName inAnimName)
 	}
 }
 
+void AAIControllerBase::PlayAnimImmediately(FName inAnimName)
+{
+	if (AnimManager)
+	{
+		AnimManager->PlayAnimImmediately(inAnimName);
+	}
+}
+
 void AAIControllerBase::OnPlayAnimSuccess(FName inAnimName)
 {
 	if (AnimManager)

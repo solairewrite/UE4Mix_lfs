@@ -31,13 +31,19 @@ public:
 	// C++的实现函数名要加上"_Implementation"
 	// 调用接口时,要加上"Execute前缀",第一个参数是实现接口的对象,后面的参数依次为对应的参数
 	// float damage = IIHealth::Execute_GetHealth(tActor);
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Health")
-		float GetHealth();
-	virtual float GetHealth_Implementation();
+	//UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Health")
+	//	float GetHealth();
+	//virtual float GetHealth_Implementation();
+
+	virtual float GetHealth();
 
 	// 普通函数可以直接调用接口
 	// bIsAI = tHealthActor->IsAI();
 	virtual bool IsAI();
 
 	virtual void OnDead();
+
+	virtual bool CanPlayTakeHitAnim();
+
+	virtual void PlayTakeHitAnim();
 };

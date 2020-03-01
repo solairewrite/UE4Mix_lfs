@@ -164,13 +164,14 @@ void APlayerCharacterBase::OnMelee()
 		if (tActor->GetClass()->ImplementsInterface(UIHealth::StaticClass()))
 		{
 			tActor->TakeDamage(MeleeDamage, FDamageEvent(), GetController(), this);
-			health = IIHealth::Execute_GetHealth(tActor);
+			//health = IIHealth::Execute_GetHealth(tActor);
 		}
 
 		// 接口检测
 		IIHealth* tHealthActor = Cast<IIHealth>(tActor);
 		if (tHealthActor)
 		{
+			health = tHealthActor->GetHealth();
 			bIsAI = tHealthActor->IsAI();
 		}
 

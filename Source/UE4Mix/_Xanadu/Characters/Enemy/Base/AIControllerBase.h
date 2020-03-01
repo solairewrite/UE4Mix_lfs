@@ -40,6 +40,8 @@ public:
 
 	void PlayAnim(FName inAnimName);
 
+	void PlayAnimImmediately(FName inAnimName);
+
 	void OnPlayAnimSuccess(FName inAnimName);
 
 	void OnPlayAnimFail(FName inAnimName);

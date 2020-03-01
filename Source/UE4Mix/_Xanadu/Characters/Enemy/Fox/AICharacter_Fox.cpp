@@ -16,3 +16,8 @@ AAICharacter_Fox::AAICharacter_Fox()
 	AIControllerClass = AAIController_Fox::StaticClass();
 }
 
+bool AAICharacter_Fox::CanPlayTakeHitAnim()
+{
+	return true;
+}
+

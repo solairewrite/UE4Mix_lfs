@@ -5,6 +5,7 @@
 #include "AIControllerBase.h"
 #include "AICharacterBase.h"
 #include "AICommand.h"
+#include "Engine/World.h"
 
 // Sets default values
 AAIAnimManager::AAIAnimManager()
@@ -58,8 +59,47 @@ void AAIAnimManager::PlayAnim(FName inAnimName)
 	}
 }
 
+void AAIAnimManager::PlayAnimImmediately(FName inAnimName)
+{
+	if (CurrCommand)
+	{
+		CurrCommand->CommandPause();
+		PauseCommandAnimName = inAnimName;
+	}
+
+	AAICharacterBase* character = GetCharacter();
+	if (character)
+	{
+		character->PlayAnim(inAnimName, true);
+	}
+}
+
 void AAIAnimManager::OnPlayAnimSuccess(FName inAnimName)
 {
+	// 检测是否是暂停命令的动画
+	if (!PauseCommandAnimName.IsNone() && inAnimName == PauseCommandAnimName)
+	{
+		if (CurrCommand)
+		{
+			CurrCommand->ReDoCommand();
+			PauseCommandAnimName = NAME_None;
+			return;
+		}
+	}
+	// 小概率受击动画的PauseCommandAnimName为空,不知道原因
+	if (inAnimName == "TakeHit")
+	{
+		if (CurrCommand)
+		{
+			CurrCommand->ReDoCommand();
+			return;
+		}
+	}
+
+	if (AnimQueue.Num() <= 0)
+	{
+		return;
+	}
 	bool bIsRightAnim = AnimQueue[CurrentAnimIndex] == inAnimName;
 	// 断言
 	check(bIsRightAnim && "动画名称和索引不对应");

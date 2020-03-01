@@ -131,9 +131,10 @@ public:
 	void TurnToPlayer();
 
 	// 根据AnimSequence,动态播放Montage,返回动画时长
-	float PlayAnim(FName inAnimName);
+	float PlayAnim(FName inAnimName, bool bPlayImmediately = false);
 
-	virtual float GetHealth_Implementation() override;
+	//virtual float GetHealth_Implementation() override;
+	virtual float GetHealth() override;
 
 	virtual bool IsAI() override;
 
@@ -142,4 +143,7 @@ public:
 	void OnDeathAnimEnd();
 
 	void OnMelee();
+
+	virtual bool CanPlayTakeHitAnim() override;
+	virtual void PlayTakeHitAnim() override;
 };

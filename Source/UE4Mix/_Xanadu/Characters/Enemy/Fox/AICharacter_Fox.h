@@ -20,4 +20,6 @@ class UE4MIX_API AAICharacter_Fox : public AAICharacterBase
 public:
 	AAICharacter_Fox();
 
+	virtual bool CanPlayTakeHitAnim() override;
+
 };

@@ -77,16 +77,20 @@ void AAICharacterBase::Tick(float DeltaTime)
 		return;
 	}
 
-	// 移动到玩家
-	if (bMovingToPlayer)
+	// 判断命令状态,防止命令被暂停
+	if (CurrentCommand->GetCommandState() == ECommandState::Doing)
 	{
-		TickMoveToPlayer(DeltaTime);
-	}
+		// 移动到玩家
+		if (bMovingToPlayer)
+		{
+			TickMoveToPlayer(DeltaTime);
+		}
 
-	// 转向玩家
-	if (bTurningToPlayer)
-	{
-		TickTurnToPlayer(DeltaTime);
+		// 转向玩家
+		if (bTurningToPlayer)
+		{
+			TickTurnToPlayer(DeltaTime);
+		}
 	}
 }
 
@@ -294,7 +298,10 @@ void AAICharacterBase::OnAnimMontageEnd(UAnimMontage* inMontage, bool bInterrupt
 		return;
 	}
 
-	controller->OnPlayAnimSuccess(animName);
+	if (!bInterrupted)
+	{
+		controller->OnPlayAnimSuccess(animName);
+	}
 }
 
 void AAICharacterBase::SetCurrentCommand(AAICommand* inCommand)
@@ -339,7 +346,7 @@ void AAICharacterBase::TurnToPlayer()
 	bTurningToPlayer = true;
 }
 
-float AAICharacterBase::PlayAnim(FName inAnimName)
+float AAICharacterBase::PlayAnim(FName inAnimName, bool bPlayImmediately /*= false*/)
 {
 	if (!AnimMap.Contains(inAnimName))
 	{
@@ -363,6 +370,10 @@ float AAICharacterBase::PlayAnim(FName inAnimName)
 		return 0;
 	}
 
+	//if (bPlayImmediately)
+	//{
+	//	StopAnimMontage();
+	//}
 	UAnimMontage* montage = animInst->PlaySlotAnimationAsDynamicMontage(seq, TEXT("DefaultSlot"));
 	if (!montage)
 	{
@@ -378,7 +389,7 @@ float AAICharacterBase::PlayAnim(FName inAnimName)
 	return animLength;
 }
 
-float AAICharacterBase::GetHealth_Implementation()
+float AAICharacterBase::GetHealth()
 {
 	if (HealthComp)
 	{
@@ -387,6 +398,16 @@ float AAICharacterBase::GetHealth_Implementation()
 
 	return 0.0f;
 }
+
+//float AAICharacterBase::GetHealth_Implementation()
+//{
+//	if (HealthComp)
+//	{
+//		return HealthComp->GetHealth();
+//	}
+//
+//	return 0.0f;
+//}
 
 bool AAICharacterBase::IsAI()
 {
@@ -413,5 +434,19 @@ void AAICharacterBase::OnDeathAnimEnd()
 void AAICharacterBase::OnMelee()
 {
 
+}
+
+bool AAICharacterBase::CanPlayTakeHitAnim()
+{
+	return false;
+}
+
+void AAICharacterBase::PlayTakeHitAnim()
+{
+	AAIControllerBase* controller = GetController<AAIControllerBase>();
+	if (controller)
+	{
+		controller->PlayAnimImmediately("TakeHit");
+	}
 }
 
