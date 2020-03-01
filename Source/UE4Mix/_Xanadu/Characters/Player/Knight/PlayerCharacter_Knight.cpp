@@ -2,12 +2,22 @@
 
 
 #include "PlayerCharacter_Knight.h"
+#include "Components/BoxComponent.h"
+#include "_Xanadu/Characters/Base/Interfaces/IHealth.h"
+#include "UE4Mix.h"
+
+extern TAutoConsoleVariable<int32> CVARDebugLevel;
 
 APlayerCharacter_Knight::APlayerCharacter_Knight()
 {
 	MeleeDamageArr[0] = 10.0f;
 	MeleeDamageArr[1] = 20.0f;
 	MeleeDamageArr[2] = 30.0f;
+}
+
+void APlayerCharacter_Knight::OnMelee()
+{
+	// 避免造成基类中的伤害
 }
 
 void APlayerCharacter_Knight::OnMelee1()
@@ -72,5 +82,31 @@ void APlayerCharacter_Knight::Melee()
 
 void APlayerCharacter_Knight::DoMeleeDamage(float inDamage)
 {
-	GEngine->AddOnScreenDebugMessage(1, 3.0f, FColor::Yellow, FString::SanitizeFloat(inDamage));
+	if (!MeleeBoxComp)
+	{
+		return;
+	}
+
+	TArray<AActor*> tActorArr;
+	MeleeBoxComp->GetOverlappingActors(tActorArr);
+	for (AActor* tActor : tActorArr)
+	{
+		if (tActor == this)
+		{
+			continue;
+		}
+
+		if (tActor->GetClass()->ImplementsInterface(UIHealth::StaticClass()))
+		{
+			tActor->TakeDamage(inDamage, FDamageEvent(), GetController(), this);
+
+			if (CVARDebugLevel.GetValueOnGameThread() > 0)
+			{
+				FString tName = GetDebugName(tActor);
+				float health = IIHealth::Execute_GetHealth(tActor);
+				FString tInfo = FString::Printf(TEXT("%s 血量: %s"), *tName, *FString::SanitizeFloat(health, 0));
+				GEngine->AddOnScreenDebugMessage(1, 3.0f, FColor::Yellow, tInfo);
+			}
+		}
+	}
 }

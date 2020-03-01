@@ -13,14 +13,23 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Animation/AnimInstance.h"
 #include "_Xanadu/Characters/Base/Components/HealthComponent.h"
+#include "UE4Mix.h"
 
-static int32 DebugLevel;
-FAutoConsoleVariableRef CVARDebugLevel(
-	TEXT("DebugLevel"),
-	DebugLevel,
-	TEXT("调试等级,控制是否显示调试球等,数值越大,能显示的越多"),
-	ECVF_Cheat
-);
+// 声明控制台变量有两种方式:
+// 1,直接注册控制台变量
+// 2,注册一个对现有变量的引用
+
+// 注册引用
+//static int32 DebugLevel;
+//FAutoConsoleVariableRef CVARDebugLevel(
+//	TEXT("DebugLevel"),
+//	DebugLevel,
+//	TEXT("调试等级,控制是否显示调试球等,数值越大,能显示的越多"),
+//	ECVF_Cheat
+//);
+
+// 引用已经创建的控制台变量,需要#include".h"
+extern TAutoConsoleVariable<int32> CVARDebugLevel;
 
 // Sets default values
 AAICharacterBase::AAICharacterBase()
@@ -92,7 +101,7 @@ FVector AAICharacterBase::GetNextPathPoint()
 {
 	UNavigationPath* NavPath = UNavigationSystemV1::FindPathToActorSynchronously(this, GetActorLocation(), GetPlayer());
 
-	if (DebugLevel > 0)
+	if (CVARDebugLevel.GetValueOnGameThread() > 0)
 	{
 		DebugDrawPath(NavPath);
 	}
@@ -154,7 +163,7 @@ void AAICharacterBase::TickMoveToPlayer(float DeltaTime)
 		dir.Normalize();
 		GetCharacterMovement()->AddInputVector(dir * AccelerateSpeed * DeltaTime);
 
-		if (DebugLevel > 0)
+		if (CVARDebugLevel.GetValueOnGameThread() > 0)
 		{
 			DrawDebugSphere(GetWorld(), TargetLoc, 10.0f, 12, FColor::Red, false, 1.0f, 0, 1.0f);
 		}
@@ -201,7 +210,7 @@ void AAICharacterBase::TickTurnToPlayer(float DeltaTime)
 		tYaw += GetActorRotation().Yaw;
 		SetActorRotation(FRotator(0, tYaw, 0));
 
-		if (DebugLevel > 0)
+		if (CVARDebugLevel.GetValueOnGameThread() > 0)
 		{
 			DebugDrawRotateInfo(player);
 		}

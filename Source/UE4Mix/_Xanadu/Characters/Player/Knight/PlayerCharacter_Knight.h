@@ -33,6 +33,7 @@ protected:
 
 public:
 	// 近战动画通知
+	virtual void OnMelee() override;
 	void OnMelee1();
 	void OnMelee2();
 	void OnMelee3();
