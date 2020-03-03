@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "AICharacterBase.h"
@@ -448,5 +448,15 @@ void AAICharacterBase::PlayTakeHitAnim()
 	{
 		controller->PlayAnimImmediately("TakeHit");
 	}
+}
+
+bool AAICharacterBase::CanTakeImpulse()
+{
+	return false;
+}
+
+void AAICharacterBase::TakeImpulse(FVector inImpulseVector)
+{
+	LaunchCharacter(inImpulseVector, false, false);
 }
 

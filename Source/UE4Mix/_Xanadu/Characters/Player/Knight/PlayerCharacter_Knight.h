@@ -47,5 +47,9 @@ protected:
 	// 按下左键触发带有连击功能的近战,最多连击3次
 	virtual void Melee() override;
 
-	void DoMeleeDamage(float inDamage);
+	void DoMeleeDamage(float inDamage, bool bAddImpulse = false);
+
+	void AddImpulse(AActor* inActor, FVector inDir, float inValue);
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+		float MeleeImpulseValue;
 };

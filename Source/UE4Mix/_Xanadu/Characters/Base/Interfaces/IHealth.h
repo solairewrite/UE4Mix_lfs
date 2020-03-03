@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -41,9 +41,14 @@ public:
 	// bIsAI = tHealthActor->IsAI();
 	virtual bool IsAI();
 
+	// 血量降为0时的回调函数
 	virtual void OnDead();
 
+	// 播放受击动画
 	virtual bool CanPlayTakeHitAnim();
-
 	virtual void PlayTakeHitAnim();
+
+	// 受到冲力
+	virtual bool CanTakeImpulse();
+	virtual void TakeImpulse(FVector inImpulseValue);
 };

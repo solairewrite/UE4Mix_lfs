@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -144,6 +144,11 @@ public:
 
 	void OnMelee();
 
+	// 受击动画
 	virtual bool CanPlayTakeHitAnim() override;
 	virtual void PlayTakeHitAnim() override;
+
+	// 受到冲力
+	virtual bool CanTakeImpulse() override;
+	virtual void TakeImpulse(FVector inImpulseVector) override;
 };

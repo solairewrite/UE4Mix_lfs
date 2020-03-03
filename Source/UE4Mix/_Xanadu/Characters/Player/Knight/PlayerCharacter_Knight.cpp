@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "PlayerCharacter_Knight.h"
@@ -13,6 +13,8 @@ APlayerCharacter_Knight::APlayerCharacter_Knight()
 	MeleeDamageArr[0] = 10.0f;
 	MeleeDamageArr[1] = 20.0f;
 	MeleeDamageArr[2] = 30.0f;
+
+	MeleeImpulseValue = 1000.0f;
 }
 
 void APlayerCharacter_Knight::OnMelee()
@@ -32,7 +34,7 @@ void APlayerCharacter_Knight::OnMelee2()
 
 void APlayerCharacter_Knight::OnMelee3()
 {
-	DoMeleeDamage(MeleeDamageArr[2]);
+	DoMeleeDamage(MeleeDamageArr[2], true);
 }
 
 void APlayerCharacter_Knight::OnSaveAttack()
@@ -80,7 +82,7 @@ void APlayerCharacter_Knight::Melee()
 	}
 }
 
-void APlayerCharacter_Knight::DoMeleeDamage(float inDamage)
+void APlayerCharacter_Knight::DoMeleeDamage(float inDamage, bool bAddImpulse /*= false*/)
 {
 	if (!MeleeBoxComp)
 	{
@@ -98,7 +100,7 @@ void APlayerCharacter_Knight::DoMeleeDamage(float inDamage)
 
 		IIHealth* tHealthActor = Cast<IIHealth>(tActor);
 		//if (tActor->GetClass()->ImplementsInterface(UIHealth::StaticClass()))
-		if (tHealthActor)
+		if (tHealthActor && tHealthActor->GetHealth() > 0)
 		{
 			tActor->TakeDamage(inDamage, FDamageEvent(), GetController(), this);
 
@@ -108,6 +110,15 @@ void APlayerCharacter_Knight::DoMeleeDamage(float inDamage)
 				tHealthActor->PlayTakeHitAnim();
 			}
 
+			if (bAddImpulse)
+			{
+				FVector tImpulseDir = tActor->GetActorLocation() - GetActorLocation();
+				tImpulseDir.Z = 0;
+				tImpulseDir.Normalize();
+				AddImpulse(tActor, tImpulseDir, MeleeImpulseValue);
+			}
+
+			// 绘制调试信息
 			if (CVARDebugLevel.GetValueOnGameThread() > 0)
 			{
 				FString tName = GetDebugName(tActor);
@@ -117,5 +128,14 @@ void APlayerCharacter_Knight::DoMeleeDamage(float inDamage)
 				GEngine->AddOnScreenDebugMessage(1, 3.0f, FColor::Yellow, tInfo);
 			}
 		}
+	}
+}
+
+void APlayerCharacter_Knight::AddImpulse(AActor* inActor, FVector inDir, float inValue)
+{
+	IIHealth* tHealthActor = Cast<IIHealth>(inActor);
+	if (tHealthActor && tHealthActor->CanTakeImpulse())
+	{
+		tHealthActor->TakeImpulse(inDir * inValue);
 	}
 }

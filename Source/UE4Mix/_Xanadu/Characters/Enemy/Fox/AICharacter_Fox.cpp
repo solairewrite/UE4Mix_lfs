@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "AICharacter_Fox.h"
@@ -17,6 +17,11 @@ AAICharacter_Fox::AAICharacter_Fox()
 }
 
 bool AAICharacter_Fox::CanPlayTakeHitAnim()
+{
+	return true;
+}
+
+bool AAICharacter_Fox::CanTakeImpulse()
 {
 	return true;
 }
