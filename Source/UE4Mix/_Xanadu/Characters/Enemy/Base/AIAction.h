@@ -1,24 +1,16 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "_Xanadu/Base/XanaduTypes.h"
 #include "AIAction.generated.h"
 
 class AAIControllerBase;
 class ACommandManager;
 class AAICommand;
 enum class EDoWhatOnLastCommandFail :uint8;
-
-UENUM()
-enum class EActionState :uint8
-{
-	None,
-	Doing,
-	Success,
-	Fail,
-};
 
 /**
  * AI行为,由一些列AICommand组成

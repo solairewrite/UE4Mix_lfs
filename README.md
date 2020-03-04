@@ -55,10 +55,20 @@ C:\Windows\Fonts\新宋体 常规,在编辑器内拖到 Content/_MyProjects/Font
 [报错Github文档](https://github.com/solairewrite/UE4Mix/blob/master/Notes/%E6%8A%A5%E9%94%99.md)  
 [常见问题Github文档](https://github.com/solairewrite/UE4Mix/blob/master/Notes/%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98.md)  
 
+## Visual Studio
 + 拉取后C++文件存在,但是VS删选器中不存在  
   右键.uproject生成VS项目文件
+
 + 修改C++文件路径  
-  删除目录下Binaries文件夹,右键.uproject生成VS项目文件
+  删除目录下Binaries文件夹,右键.uproject生成VS项目文件  
+
++ Output窗口乱码  
+  原因: 编码  
+  解决: 根据情况设置 Windows cmd 编码为 GBK 或 utf-8  
+  注册表编辑器 HKEY_CURRENT_USER\Console\%SystemRoot%_system32_cmd.exe  
+  修改CodePage为936(GBK), 或65001(utf-8)  
+
+
 ## Git
 + 只拉取最近一次的提交  
 `git pull --depth=1 --allow-unrelated-histories`  

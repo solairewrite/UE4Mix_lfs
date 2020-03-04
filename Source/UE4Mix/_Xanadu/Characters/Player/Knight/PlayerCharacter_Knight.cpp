@@ -4,7 +4,8 @@
 #include "PlayerCharacter_Knight.h"
 #include "Components/BoxComponent.h"
 #include "_Xanadu/Characters/Base/Interfaces/IHealth.h"
-#include "UE4Mix.h"
+//#include "UE4Mix.h"
+#include "_Xanadu/Base/XanaduTypes.h"
 
 extern TAutoConsoleVariable<int32> CVARDebugLevel;
 

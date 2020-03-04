@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -9,6 +9,10 @@
 class AAIControllerBase;
 class AAIAction;
 
+/**
+ * AI命令管理器
+ * 控制战斗状态下的AI行为
+ */
 UCLASS()
 class UE4MIX_API ACommandManager : public AActor
 {

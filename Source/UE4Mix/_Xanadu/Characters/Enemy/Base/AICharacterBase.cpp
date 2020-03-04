@@ -13,20 +13,10 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Animation/AnimInstance.h"
 #include "_Xanadu/Characters/Base/Components/HealthComponent.h"
-#include "UE4Mix.h"
-
-// 声明控制台变量有两种方式:
-// 1,直接注册控制台变量
-// 2,注册一个对现有变量的引用
-
-// 注册引用
-//static int32 DebugLevel;
-//FAutoConsoleVariableRef CVARDebugLevel(
-//	TEXT("DebugLevel"),
-//	DebugLevel,
-//	TEXT("调试等级,控制是否显示调试球等,数值越大,能显示的越多"),
-//	ECVF_Cheat
-//);
+//#include "UE4Mix.h"
+#include "_Xanadu/Base/XanaduTypes.h"
+#include "Engine/TargetPoint.h"
+#include "Blueprint/AIBlueprintHelperLibrary.h"
 
 // 引用已经创建的控制台变量,需要#include".h"
 extern TAutoConsoleVariable<int32> CVARDebugLevel;
@@ -49,6 +39,14 @@ AAICharacterBase::AAICharacterBase()
 
 	// 攻击
 	MeleeRange = 250.0f;
+
+	// AIState
+	IdleTimeRangeMin = 1.0f;
+	IdleTimeRangeMax = 2.0f;
+
+	bCanPatrol = true;
+	PatrolProbability = 0.5f;
+	bFixdPatrolPoint = true;
 
 	// 血量组件
 	HealthComp = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComp"));
@@ -77,8 +75,14 @@ void AAICharacterBase::Tick(float DeltaTime)
 		return;
 	}
 
+	if (GetAIState() == EAIState::Patrol && bPatroling)
+	{
+		TickPatrol();
+	}
+
 	// 判断命令状态,防止命令被暂停
-	if (CurrentCommand->GetCommandState() == ECommandState::Doing)
+	if (GetAIState() == EAIState::Attack &&
+		CurrentCommand->GetCommandState() == ECommandState::Doing)
 	{
 		// 移动到玩家
 		if (bMovingToPlayer)
@@ -122,7 +126,7 @@ FVector AAICharacterBase::GetNextPathPoint()
 {
 	UNavigationPath* NavPath = UNavigationSystemV1::FindPathToActorSynchronously(this, GetActorLocation(), GetPlayer());
 
-	if (CVARDebugLevel.GetValueOnGameThread() > 0)
+	if (CVARDebugLevel.GetValueOnGameThread() > 1)
 	{
 		DebugDrawPath(NavPath);
 	}
@@ -184,7 +188,7 @@ void AAICharacterBase::TickMoveToPlayer(float DeltaTime)
 		dir.Normalize();
 		GetCharacterMovement()->AddInputVector(dir * AccelerateSpeed * DeltaTime);
 
-		if (CVARDebugLevel.GetValueOnGameThread() > 0)
+		if (CVARDebugLevel.GetValueOnGameThread() > 1)
 		{
 			DrawDebugSphere(GetWorld(), TargetLoc, 10.0f, 12, FColor::Red, false, 1.0f, 0, 1.0f);
 		}
@@ -231,7 +235,7 @@ void AAICharacterBase::TickTurnToPlayer(float DeltaTime)
 		tYaw += GetActorRotation().Yaw;
 		SetActorRotation(FRotator(0, tYaw, 0));
 
-		if (CVARDebugLevel.GetValueOnGameThread() > 0)
+		if (CVARDebugLevel.GetValueOnGameThread() > 1)
 		{
 			DebugDrawRotateInfo(player);
 		}
@@ -458,5 +462,95 @@ bool AAICharacterBase::CanTakeImpulse()
 void AAICharacterBase::TakeImpulse(FVector inImpulseVector)
 {
 	LaunchCharacter(inImpulseVector, false, false);
+}
+
+void AAICharacterBase::TickPatrol()
+{
+	float tDis = UKismetMathLibrary::Vector_Distance2D(GetActorLocation(), CurrPatrolLoc);
+	if (tDis < 50.0f)
+	{
+		AAIControllerBase* controller = GetController<AAIControllerBase>();
+		if (controller)
+		{
+			controller->StopMovement();
+			PatrolFinish();
+		}
+	}
+}
+
+EAIState AAICharacterBase::GetAIState()
+{
+	AAIControllerBase* controller = GetController<AAIControllerBase>();
+	if (controller)
+	{
+		return controller->GetAIState();
+	}
+	return EAIState::None;
+}
+
+void AAICharacterBase::SetAIState(EAIState inNewState)
+{
+	AAIControllerBase* controller = GetController<AAIControllerBase>();
+	if (controller)
+	{
+		controller->SetAIState(inNewState);
+	}
+}
+
+FVector AAICharacterBase::GetRandomPatrolLoc()
+{
+	if (bFixdPatrolPoint)
+	{
+		TArray<FVector> tLocArr;
+		for (ATargetPoint* tPoint : PatrolPointArr)
+		{
+			FVector tLoc = tPoint->GetActorLocation();
+			if (tLoc != CurrPatrolLoc)
+			{
+				tLocArr.Add(tLoc);
+			}
+		}
+		if (tLocArr.Num() > 0)
+		{
+			int32 tRand = UKismetMathLibrary::RandomInteger(tLocArr.Num());
+			return tLocArr[tRand];
+		}
+	}
+	else
+	{
+		// 动态巡逻点
+	}
+	return FVector::ZeroVector;
+}
+
+void AAICharacterBase::StartPartol()
+{
+	bPatroling = true;
+	CurrPatrolLoc = GetRandomPatrolLoc();
+	// 寻找巡逻点失败
+	if (CurrPatrolLoc == FVector::ZeroVector)
+	{
+		PatrolFinish();
+		return;
+	}
+
+	AAIControllerBase* controller = GetController<AAIControllerBase>();
+	if (!controller)
+	{
+		PatrolFinish();
+		return;
+	}
+
+	UAIBlueprintHelperLibrary::SimpleMoveToLocation(controller, CurrPatrolLoc);
+}
+
+void AAICharacterBase::PatrolFinish()
+{
+	bPatroling = false;
+	AAIControllerBase* controller = GetController<AAIControllerBase>();
+	if (controller)
+	{
+		controller->FinishPatrol();
+	}
 }
 

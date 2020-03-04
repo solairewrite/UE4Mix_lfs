@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "AIAnimManager.h"
@@ -121,7 +121,8 @@ AAICharacterBase* AAIAnimManager::GetCharacter()
 {
 	if (OwnerController)
 	{
-		return Cast<AAICharacterBase>(OwnerController->GetCharacter());
+		//return Cast<AAICharacterBase>(OwnerController->GetCharacter());
+		return OwnerController->GetCharacter<AAICharacterBase>();
 	}
 	return nullptr;
 }

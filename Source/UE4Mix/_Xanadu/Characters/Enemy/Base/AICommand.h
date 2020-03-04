@@ -1,33 +1,14 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "AIControllerBase.h"
+#include "_Xanadu/Base/XanaduTypes.h"
 #include "AICommand.generated.h"
 
-//class AAIControllerBase;
 class AAIAction;
-
-UENUM()
-enum class ECommandState :uint8
-{
-	None,
-	Doing,
-	Pause,
-	Success,
-	Fail,
-};
-
-UENUM()
-enum class EDoWhatOnLastCommandFail :uint8
-{
-	Execute,
-	ReDoLastCommand,
-	Skip,
-	ActionFail,
-};
 
 /**
  * AI基础命令的基类,如跑向玩家,转向玩家,攻击等
@@ -100,7 +81,8 @@ T* AAICommand::GetCharacter()
 {
 	if (OwnerController)
 	{
-		return Cast<T>(OwnerController->GetCharacter());
+		//return Cast<T>(OwnerController->GetCharacter());
+		return OwnerController->GetCharacter<T>();
 	}
 	return nullptr;
 }

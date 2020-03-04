@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "_Xanadu/Characters/Base/Interfaces/IHealth.h" // 接口必须include
+#include "_Xanadu/Base/XanaduTypes.h"
 #include "AICharacterBase.generated.h"
 
 class AIControllerBase;
@@ -12,14 +13,7 @@ class ACharacter;
 class UNavigationPath;
 class AAICommand;
 class UHealthComponent;
-
-UENUM(BlueprintType)
-enum class ERotateDirection :uint8
-{
-	None,
-	Left,
-	Right,
-};
+class ATargetPoint;
 
 UCLASS()
 class UE4MIX_API AAICharacterBase : public ACharacter,
@@ -42,6 +36,7 @@ public:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 protected:
+
 	UPROPERTY(EditDefaultsOnly, Category = "AICharacter")
 		float MaxWalkSpeed;
 
@@ -118,6 +113,7 @@ protected:
 		bool bDead;
 
 public:
+
 	void SetCurrentCommand(AAICommand* inCommand);
 
 	// 当前任务成功
@@ -151,4 +147,42 @@ public:
 	// 受到冲力
 	virtual bool CanTakeImpulse() override;
 	virtual void TakeImpulse(FVector inImpulseVector) override;
+
+	// AIState
+protected:
+	// 每次Idle的最短时间
+	UPROPERTY(EditDefaultsOnly, Category = "AIState")
+		float IdleTimeRangeMin;
+	// 每次Idle的最长时间
+	UPROPERTY(EditDefaultsOnly, Category = "AIState")
+		float IdleTimeRangeMax;
+
+	UPROPERTY(EditDefaultsOnly, Category = "AIState")
+		bool bCanPatrol;
+	// Idle后巡逻的概率
+	UPROPERTY(EditDefaultsOnly, Category = "AIState")
+		float PatrolProbability;
+	// 是否使用固定巡逻点
+	UPROPERTY(EditDefaultsOnly, Category = "AIState")
+		bool bFixdPatrolPoint;
+	// 如果使用固定巡逻点,巡逻点的引用数组
+	UPROPERTY(EditAnywhere, Category = "AIState")
+		TArray<ATargetPoint*> PatrolPointArr;
+	FVector CurrPatrolLoc; // 当前巡逻点位置
+
+	void TickPatrol();
+	bool bPatroling;
+
+public:
+	EAIState GetAIState();
+	void SetAIState(EAIState inNewState);
+
+	float GetIdleTimeRangeMin() { return IdleTimeRangeMin; }
+	float GetIdleTimeRangeMax() { return IdleTimeRangeMax; }
+
+	bool CanPatrol() { return bCanPatrol; }
+	float GetPatrolProbability() { return PatrolProbability; }
+	FVector GetRandomPatrolLoc();
+	void StartPartol();
+	void PatrolFinish();
 };
