@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "AIControllerBase.h"
@@ -11,12 +11,37 @@
 #include "AICharacterBase.h"
 #include "TimerManager.h"
 #include "_Xanadu/Base/XanaduTools.h"
+#include "Perception/AIPerceptionComponent.h"
+#include "Perception/AISenseConfig_Sight.h"
 
 extern TAutoConsoleVariable<int32> CVARDebugLevel;
 
 AAIControllerBase::AAIControllerBase()
 {
 	AIState = EAIState::Idle;
+
+	// AI感知组件
+	AIPerceptionComp = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("AIPerceptionComp"));
+	AIPerceptionComp->SetDominantSense(UAISenseConfig_Sight::StaticClass());
+
+	// AI视觉感知配置
+	UAISenseConfig_Sight* tSightConfig = NewObject<UAISenseConfig_Sight>();
+	AIPerceptionComp->ConfigureSense(*tSightConfig);
+
+	AIPerception_SightRadius = 1000.0f;
+	AIPerception_LoseSightRadius = 1000.0f;
+	AIPerception_FOV = 60.0f;
+	tSightConfig->SightRadius = AIPerception_SightRadius;
+	tSightConfig->LoseSightRadius = AIPerception_LoseSightRadius;
+	tSightConfig->PeripheralVisionAngleDegrees = AIPerception_FOV;
+
+	// 检测对象,由于官方还未完善,需要全选
+	tSightConfig->DetectionByAffiliation.bDetectEnemies = true;
+	tSightConfig->DetectionByAffiliation.bDetectNeutrals = true;
+	tSightConfig->DetectionByAffiliation.bDetectFriendlies = true;
+
+	// 多久被遗忘
+	tSightConfig->SetMaxAge(1.0f);
 }
 
 void AAIControllerBase::BeginPlay()
@@ -30,6 +55,13 @@ void AAIControllerBase::BeginPlay()
 	//StartCommand();
 
 	StartIdle();
+
+	if (AIPerceptionComp)
+	{
+		AIPerceptionComp->OnTargetPerceptionUpdated;
+		TArray<AActor*> SensedActors;
+		AIPerceptionComp->GetKnownPerceivedActors(UAISense::StaticClass(), SensedActors);
+	}
 }
 
 void AAIControllerBase::InitAnimManager()

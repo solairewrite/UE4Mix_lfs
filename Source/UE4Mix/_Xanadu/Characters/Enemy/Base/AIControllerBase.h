@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -10,6 +10,7 @@ class ACommandManager;
 class AAIAnimManager;
 class AAICommand;
 enum class EAIState :uint8;
+class UAIPerceptionComponent;
 
 /**
  *
@@ -88,6 +89,20 @@ public:
 	bool bIsNormalState();
 
 	void FinishPatrol(); // 到达巡逻点,主动调用
+
+// 感知系统
+protected:
+	UPROPERTY(VisibleAnywhere, Category = "AIPerception")
+		UAIPerceptionComponent* AIPerceptionComp;
+
+	UPROPERTY(EditDefaultsOnly, Category = "AIPerception")
+		float AIPerception_SightRadius;
+	// 丢失已被看到目标的距离
+	UPROPERTY(EditDefaultsOnly, Category = "AIPerception")
+		float AIPerception_LoseSightRadius;
+	// 感知视角范围
+	UPROPERTY(EditDefaultsOnly, Category = "AIPerception")
+		float AIPerception_FOV;
 };
 
 template<class T>
