@@ -13,13 +13,17 @@
 #include "_Xanadu/Base/XanaduTools.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
+#include "Perception/AISenseConfig_Damage.h"
 #include "_Xanadu/Characters/Player/Base/PlayerCharacterBase.h"
+#include "_Xanadu/Characters/Player/Base/PlayerControllerBase.h"
 
 extern TAutoConsoleVariable<int32> CVARDebugLevel;
 
 AAIControllerBase::AAIControllerBase()
 {
 	AIState = EAIState::Idle;
+
+	RememberDamageTime = 10.0f;
 }
 
 void AAIControllerBase::BeginPlay()
@@ -29,12 +33,22 @@ void AAIControllerBase::BeginPlay()
 	InitAnimManager();
 
 	InitCommandManager();
-	// TODO 切换战斗状态
+	// 根据感知系统开启命令管理器
 	//StartCommand();
 
 	InitAIPerception();
 
 	StartIdle();
+}
+
+void AAIControllerBase::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (CVARDebugLevel.GetValueOnGameThread() > 0)
+	{
+		DrawDebugInfo();
+	}
 }
 
 void AAIControllerBase::InitAnimManager()
@@ -248,6 +262,8 @@ void AAIControllerBase::OnEnterPatrolState()
 
 void AAIControllerBase::OnEnterAttackState()
 {
+	// 停止原来的移动,如巡逻
+	StopMovement();
 	StartCommand();
 }
 
@@ -341,6 +357,7 @@ void AAIControllerBase::TimerAIPerception()
 	TArray<AActor*> tSensedActors;
 	// 这里的感知类型不能填基类,要具体到视觉
 	AIPerceptionComp->GetKnownPerceivedActors(UAISenseConfig_Sight::StaticClass(), tSensedActors);
+	// 伤害感知实测不实用
 
 	// 普通状态检测是否有攻击目标
 	if (IsNormalState())
@@ -350,14 +367,14 @@ void AAIControllerBase::TimerAIPerception()
 			APlayerCharacterBase* tCharacter = Cast<APlayerCharacterBase>(tActor);
 			if (tCharacter)
 			{
-				GetAttackTarget(tCharacter);
+				FindAttackTarget(tCharacter);
 				return;
 			}
 		}
 	}
 
 	// 战斗状态检测是否丢失攻击目标
-	if (AIState == EAIState::Attack)
+	if (AIState == EAIState::Attack && !bRememberDamage)
 	{
 		if (AttackTarget == nullptr ||
 			!tSensedActors.Contains(AttackTarget))
@@ -368,7 +385,7 @@ void AAIControllerBase::TimerAIPerception()
 	}
 }
 
-void AAIControllerBase::GetAttackTarget(APlayerCharacterBase* inPlayer)
+void AAIControllerBase::FindAttackTarget(APlayerCharacterBase* inPlayer)
 {
 	AttackTarget = inPlayer;
 	// 设置攻击状态,并在进入攻击状态的回调函数中,开启命令管理器
@@ -380,4 +397,37 @@ void AAIControllerBase::LoseAttackTarget()
 	AttackTarget = nullptr;
 	// 设置进入Idle状态,并在离开攻击状态的回调函数中,关闭命令管理器
 	SetAIState(EAIState::Idle);
+}
+
+void AAIControllerBase::DrawDebugInfo()
+{
+
+}
+
+void AAIControllerBase::ForgetDamage()
+{
+	bRememberDamage = false;
+}
+
+void AAIControllerBase::OnAttackBy(class AController* InstigatedBy, AActor* DamageCauser)
+{
+	// 检测玩家直接造成了伤害
+	APlayerCharacterBase* player = Cast<APlayerCharacterBase>(DamageCauser);
+
+	if (!player)
+	{
+		// 检测玩家间接造成了伤害
+		APlayerControllerBase* pc = Cast<APlayerControllerBase>(InstigatedBy);
+		if (pc)
+		{
+			player = pc->GetCharacter<APlayerCharacterBase>();
+		}
+	}
+
+	if (player)
+	{
+		bRememberDamage = true;
+		GetWorldTimerManager().SetTimer(TH_RememberDamage, this, &AAIControllerBase::ForgetDamage, RememberDamageTime, false);
+		FindAttackTarget(player);
+	}
 }

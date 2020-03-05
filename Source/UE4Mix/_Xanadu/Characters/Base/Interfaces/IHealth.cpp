@@ -20,6 +20,11 @@ bool IIHealth::IsAI()
 	return false;
 }
 
+void IIHealth::OnAttackBy(class AController* InstigatedBy, AActor* DamageCauser)
+{
+
+}
+
 void IIHealth::OnDead()
 {
 

@@ -13,10 +13,10 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Animation/AnimInstance.h"
 #include "_Xanadu/Characters/Base/Components/HealthComponent.h"
-//#include "UE4Mix.h"
 #include "_Xanadu/Base/XanaduTypes.h"
 #include "Engine/TargetPoint.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
+#include "_Xanadu/Characters/Player/Base/PlayerCharacterBase.h"
 
 // 引用已经创建的控制台变量,需要#include".h"
 extern TAutoConsoleVariable<int32> CVARDebugLevel;
@@ -110,16 +110,11 @@ void AAICharacterBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	}
 }
 
-ACharacter* AAICharacterBase::GetPlayer()
+APlayerCharacterBase* AAICharacterBase::GetPlayer()
 {
-	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(this, 0);
+	ACharacter* player = UGameplayStatics::GetPlayerCharacter(this, 0);
 
-	if (Player)
-	{
-		return Player;
-	}
-
-	return nullptr;
+	return Cast<APlayerCharacterBase>(player);
 }
 
 FVector AAICharacterBase::GetNextPathPoint()
@@ -418,6 +413,15 @@ bool AAICharacterBase::IsAI()
 	return true;
 }
 
+void AAICharacterBase::OnAttackBy(class AController* InstigatedBy, AActor* DamageCauser)
+{
+	AAIControllerBase* controller = GetController<AAIControllerBase>();
+	if (controller)
+	{
+		controller->OnAttackBy(InstigatedBy, DamageCauser);
+	}
+}
+
 void AAICharacterBase::OnDead()
 {
 	bDead = true;
@@ -475,6 +479,12 @@ void AAICharacterBase::TickPatrol()
 			controller->StopMovement();
 			PatrolFinish();
 		}
+	}
+
+	if (CVARDebugLevel.GetValueOnAnyThread() > 0)
+	{
+		DrawDebugSphere(GetWorld(), CurrPatrolLoc, 10.0f, 12, FColor::Purple, false, 0.0f, 0, 1.0f);
+		DrawDebugLine(GetWorld(), GetActorLocation(), CurrPatrolLoc, FColor::Purple, false, 0.0f, 0, 1.0f);
 	}
 }
 

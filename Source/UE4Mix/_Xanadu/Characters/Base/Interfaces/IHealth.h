@@ -41,6 +41,9 @@ public:
 	// bIsAI = tHealthActor->IsAI();
 	virtual bool IsAI();
 
+	// 被攻击回调,不处理掉血逻辑(血量组件处理)
+	virtual void OnAttackBy(class AController* InstigatedBy, AActor* DamageCauser);
+
 	// 血量降为0时的回调函数
 	virtual void OnDead();
 

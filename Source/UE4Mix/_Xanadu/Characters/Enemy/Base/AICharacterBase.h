@@ -9,7 +9,7 @@
 #include "AICharacterBase.generated.h"
 
 class AIControllerBase;
-class ACharacter;
+class APlayerCharacterBase;
 class UNavigationPath;
 class AAICommand;
 class UHealthComponent;
@@ -49,8 +49,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "AICharacter")
 		float MeleeRange;
 
-	// TODO 新建Player基类
-	ACharacter* GetPlayer();
+	APlayerCharacterBase* GetPlayer();
 	template<class T>
 	T* GetPlayer() const
 	{
@@ -129,10 +128,13 @@ public:
 	// 根据AnimSequence,动态播放Montage,返回动画时长
 	float PlayAnim(FName inAnimName, bool bPlayImmediately = false);
 
+	// 血量接口
 	//virtual float GetHealth_Implementation() override;
 	virtual float GetHealth() override;
 
 	virtual bool IsAI() override;
+
+	virtual void OnAttackBy(class AController* InstigatedBy, AActor* DamageCauser) override;
 
 	virtual void OnDead();
 

@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "HealthComponent.h"
@@ -42,10 +42,16 @@ void UHealthComponent::OnTakeDamage(AActor* DamagedActor, float Damage, const cl
 
 	Health = FMath::Clamp(Health - Damage, 0.0f, HealthMax);
 
-	if (Health <= 0.0f)
+	// AI记录被攻击
+	IIHealth* tHealthActor = Cast<IIHealth>(GetOwner());
+	if (tHealthActor)
 	{
-		IIHealth* tHealthActor = Cast<IIHealth>(GetOwner());
-		if (tHealthActor)
+		if (tHealthActor->IsAI())
+		{
+			tHealthActor->OnAttackBy(InstigatedBy, DamageCauser);
+		}
+
+		if (Health <= 0.0f)
 		{
 			tHealthActor->OnDead();
 		}

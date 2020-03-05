@@ -27,6 +27,9 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+public:
+	virtual void Tick(float DeltaTime) override;
+
 protected:
 	// 命令管理器的类
 	TSubclassOf<ACommandManager> CommandManagerClass;
@@ -99,7 +102,7 @@ public:
 
 // 感知系统
 protected:
-	
+
 	// 实测如果使用蓝图,感知系统会出现各种问题
 	UAIPerceptionComponent* GetAIPerceptionComp();
 
@@ -112,9 +115,24 @@ protected:
 	void TimerAIPerception();
 
 	// 感知系统检测到玩家
-	void GetAttackTarget(APlayerCharacterBase* inPlayer);
+	void FindAttackTarget(APlayerCharacterBase* inPlayer);
 	// 感知系统丢失玩家
 	void LoseAttackTarget();
+
+protected:
+	void DrawDebugInfo();
+
+	// 受伤后,在一段时间范围内记得,避免感知系统检测不到玩家,回到Idle
+	bool bRememberDamage;
+	// 受伤后多久记住攻击目标
+	UPROPERTY(EditDefaultsOnly, Category = "AIState")
+		float RememberDamageTime;
+	FTimerHandle TH_RememberDamage;
+	void ForgetDamage();
+
+public:
+	// 受到攻击的回调,开启战斗状态,记录攻击目标
+	virtual void OnAttackBy(class AController* InstigatedBy, AActor* DamageCauser);
 };
 
 template<class T>
