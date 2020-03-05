@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "AIControllerBase.h"
@@ -13,35 +13,13 @@
 #include "_Xanadu/Base/XanaduTools.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
+#include "_Xanadu/Characters/Player/Base/PlayerCharacterBase.h"
 
 extern TAutoConsoleVariable<int32> CVARDebugLevel;
 
 AAIControllerBase::AAIControllerBase()
 {
 	AIState = EAIState::Idle;
-
-	// AI感知组件
-	AIPerceptionComp = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("AIPerceptionComp"));
-	AIPerceptionComp->SetDominantSense(UAISenseConfig_Sight::StaticClass());
-
-	// AI视觉感知配置
-	UAISenseConfig_Sight* tSightConfig = NewObject<UAISenseConfig_Sight>();
-	AIPerceptionComp->ConfigureSense(*tSightConfig);
-
-	AIPerception_SightRadius = 1000.0f;
-	AIPerception_LoseSightRadius = 1000.0f;
-	AIPerception_FOV = 60.0f;
-	tSightConfig->SightRadius = AIPerception_SightRadius;
-	tSightConfig->LoseSightRadius = AIPerception_LoseSightRadius;
-	tSightConfig->PeripheralVisionAngleDegrees = AIPerception_FOV;
-
-	// 检测对象,由于官方还未完善,需要全选
-	tSightConfig->DetectionByAffiliation.bDetectEnemies = true;
-	tSightConfig->DetectionByAffiliation.bDetectNeutrals = true;
-	tSightConfig->DetectionByAffiliation.bDetectFriendlies = true;
-
-	// 多久被遗忘
-	tSightConfig->SetMaxAge(1.0f);
 }
 
 void AAIControllerBase::BeginPlay()
@@ -54,14 +32,9 @@ void AAIControllerBase::BeginPlay()
 	// TODO 切换战斗状态
 	//StartCommand();
 
-	StartIdle();
+	InitAIPerception();
 
-	if (AIPerceptionComp)
-	{
-		AIPerceptionComp->OnTargetPerceptionUpdated;
-		TArray<AActor*> SensedActors;
-		AIPerceptionComp->GetKnownPerceivedActors(UAISense::StaticClass(), SensedActors);
-	}
+	StartIdle();
 }
 
 void AAIControllerBase::InitAnimManager()
@@ -196,6 +169,7 @@ void AAIControllerBase::OnEnterAIState(EAIState inState)
 	case EAIState::SearchTarget:
 		break;
 	case EAIState::Attack:
+		OnEnterAttackState();
 		break;
 	default:
 		break;
@@ -215,6 +189,7 @@ void AAIControllerBase::OnLeaveAIState(EAIState inState)
 	case EAIState::Rest:
 		break;
 	case EAIState::Idle:
+		OnLeaveIdleState();
 		break;
 	case EAIState::Patrol:
 		break;
@@ -223,6 +198,7 @@ void AAIControllerBase::OnLeaveAIState(EAIState inState)
 	case EAIState::SearchTarget:
 		break;
 	case EAIState::Attack:
+		OnLeaveAttackState();
 		break;
 	default:
 		break;
@@ -250,6 +226,11 @@ void AAIControllerBase::OnEnterIdleState()
 	GetWorldTimerManager().SetTimer(TH_FinishIdle, this, &AAIControllerBase::FinishIdle, tIdleTime, false);
 }
 
+void AAIControllerBase::OnLeaveIdleState()
+{
+	GetWorldTimerManager().ClearTimer(TH_FinishIdle);
+}
+
 void AAIControllerBase::FinishIdle()
 {
 	EAIState tNextState = DecideNextNormalState();
@@ -262,6 +243,19 @@ void AAIControllerBase::OnEnterPatrolState()
 	if (character)
 	{
 		character->StartPartol();
+	}
+}
+
+void AAIControllerBase::OnEnterAttackState()
+{
+	StartCommand();
+}
+
+void AAIControllerBase::OnLeaveAttackState()
+{
+	if (CommandManager)
+	{
+		CommandManager->StopAction();
 	}
 }
 
@@ -300,7 +294,7 @@ void AAIControllerBase::SetAIState(EAIState inNewState)
 	OnAIStateChanged(tOldState, inNewState);
 }
 
-bool AAIControllerBase::bIsNormalState()
+bool AAIControllerBase::IsNormalState()
 {
 	if (AIState == EAIState::Idle ||
 		AIState == EAIState::Patrol ||
@@ -316,4 +310,74 @@ void AAIControllerBase::FinishPatrol()
 {
 	EAIState tNextState = DecideNextNormalState();
 	SetAIState(tNextState);
+}
+
+UAIPerceptionComponent* AAIControllerBase::GetAIPerceptionComp()
+{
+	return Cast<UAIPerceptionComponent>(GetComponentByClass(UAIPerceptionComponent::StaticClass()));
+}
+
+void AAIControllerBase::InitAIPerception()
+{
+	UAIPerceptionComponent* AIPerceptionComp = GetAIPerceptionComp();
+	if (!AIPerceptionComp)
+	{
+		return;
+	}
+
+	// 定时AI感知
+	GetWorldTimerManager().SetTimer(TH_AIPerception, this, &AAIControllerBase::TimerAIPerception, 0.2f, true, 0.0f);
+}
+
+void AAIControllerBase::TimerAIPerception()
+{
+	UAIPerceptionComponent* AIPerceptionComp = GetAIPerceptionComp();
+	if (!AIPerceptionComp)
+	{
+		return;
+	}
+
+	// 获取所有感知Actor,包括当前没看到,但是在MaxAge时间内看到的
+	TArray<AActor*> tSensedActors;
+	// 这里的感知类型不能填基类,要具体到视觉
+	AIPerceptionComp->GetKnownPerceivedActors(UAISenseConfig_Sight::StaticClass(), tSensedActors);
+
+	// 普通状态检测是否有攻击目标
+	if (IsNormalState())
+	{
+		for (AActor* tActor : tSensedActors)
+		{
+			APlayerCharacterBase* tCharacter = Cast<APlayerCharacterBase>(tActor);
+			if (tCharacter)
+			{
+				GetAttackTarget(tCharacter);
+				return;
+			}
+		}
+	}
+
+	// 战斗状态检测是否丢失攻击目标
+	if (AIState == EAIState::Attack)
+	{
+		if (AttackTarget == nullptr ||
+			!tSensedActors.Contains(AttackTarget))
+		{
+			LoseAttackTarget();
+			return;
+		}
+	}
+}
+
+void AAIControllerBase::GetAttackTarget(APlayerCharacterBase* inPlayer)
+{
+	AttackTarget = inPlayer;
+	// 设置攻击状态,并在进入攻击状态的回调函数中,开启命令管理器
+	SetAIState(EAIState::Attack);
+}
+
+void AAIControllerBase::LoseAttackTarget()
+{
+	AttackTarget = nullptr;
+	// 设置进入Idle状态,并在离开攻击状态的回调函数中,关闭命令管理器
+	SetAIState(EAIState::Idle);
 }

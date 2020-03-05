@@ -72,6 +72,8 @@ public:
 
 	void OnCommandFail(AAICommand* inCommand);
 
+	// 终止Action,并停止后面所有的Action
+	virtual void ActionAbort();
 
 protected:
 	// 创建命令,并加入CommandArr

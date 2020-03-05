@@ -40,6 +40,7 @@ enum class EActionState :uint8
 	Doing,
 	Success,
 	Fail,
+	Abort, // 外部终止Action,如丢失目标
 };
 
 /** AI Command 状态 */

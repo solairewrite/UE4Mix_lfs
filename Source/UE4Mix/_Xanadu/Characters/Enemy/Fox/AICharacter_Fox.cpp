@@ -13,7 +13,8 @@
 
 AAICharacter_Fox::AAICharacter_Fox()
 {
-	AIControllerClass = AAIController_Fox::StaticClass();
+	// 为了使用蓝图控制类,这里不设置C++控制类
+	//AIControllerClass = AAIController_Fox::StaticClass();
 }
 
 bool AAICharacter_Fox::CanPlayTakeHitAnim()

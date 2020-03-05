@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -11,6 +11,7 @@ class AAIAnimManager;
 class AAICommand;
 enum class EAIState :uint8;
 class UAIPerceptionComponent;
+class APlayerCharacterBase;
 
 /**
  *
@@ -23,6 +24,7 @@ class UE4MIX_API AAIControllerBase : public AAIController
 public:
 	AAIControllerBase();
 
+protected:
 	virtual void BeginPlay() override;
 
 protected:
@@ -38,6 +40,7 @@ public:
 
 	void InitCommandManager();
 
+	// 开启命令管理器,所有Action重设,并从第一个Action开始
 	void StartCommand();
 
 	// PlayAnim()前必须调用PrepareForPlayAnim()
@@ -72,10 +75,14 @@ protected:
 
 	void StartIdle(); // 开始Idle,主动调用
 	virtual void OnEnterIdleState();
+	virtual void OnLeaveIdleState();
 	virtual void FinishIdle(); // 结束Idle状态,主动调用
 	FTimerHandle TH_FinishIdle;
 
 	virtual void OnEnterPatrolState();
+
+	virtual void OnEnterAttackState();
+	virtual void OnLeaveAttackState();
 
 	// 在一个普通状态结束时,决定下一个普通状态
 	virtual EAIState DecideNextNormalState();
@@ -86,23 +93,28 @@ public:
 	void SetAIState(EAIState inNewState);
 
 	// 是否是一般状态,如Idle,休息,睡眠等
-	bool bIsNormalState();
+	bool IsNormalState();
 
 	void FinishPatrol(); // 到达巡逻点,主动调用
 
 // 感知系统
 protected:
-	UPROPERTY(VisibleAnywhere, Category = "AIPerception")
-		UAIPerceptionComponent* AIPerceptionComp;
+	
+	// 实测如果使用蓝图,感知系统会出现各种问题
+	UAIPerceptionComponent* GetAIPerceptionComp();
 
-	UPROPERTY(EditDefaultsOnly, Category = "AIPerception")
-		float AIPerception_SightRadius;
-	// 丢失已被看到目标的距离
-	UPROPERTY(EditDefaultsOnly, Category = "AIPerception")
-		float AIPerception_LoseSightRadius;
-	// 感知视角范围
-	UPROPERTY(EditDefaultsOnly, Category = "AIPerception")
-		float AIPerception_FOV;
+	APlayerCharacterBase* AttackTarget;
+
+	// BeginPlay()中开启感知系统定时函数
+	void InitAIPerception();
+
+	FTimerHandle TH_AIPerception;
+	void TimerAIPerception();
+
+	// 感知系统检测到玩家
+	void GetAttackTarget(APlayerCharacterBase* inPlayer);
+	// 感知系统丢失玩家
+	void LoseAttackTarget();
 };
 
 template<class T>

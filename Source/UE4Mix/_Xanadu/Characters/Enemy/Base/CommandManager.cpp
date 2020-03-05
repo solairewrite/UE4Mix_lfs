@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "CommandManager.h"
@@ -32,6 +32,8 @@ void ACommandManager::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
 
+	StopAction();
+
 	GC_Actions();
 }
 
@@ -42,7 +44,11 @@ void ACommandManager::Init(AAIControllerBase* inController)
 
 void ACommandManager::StartAction()
 {
-	SetActionArray();
+	if (!bHasSetActionArr)
+	{
+		SetActionArray();
+		bHasSetActionArr = true;
+	}
 
 	if (ActionArr.Num() > 0 && ActionArr[0])
 	{
@@ -78,6 +84,19 @@ void ACommandManager::OnActionFail(AAIAction* inAction)
 {
 	// 暂时Action失败也开始下一个Action
 	StartNextAction();
+}
+
+void ACommandManager::OnActionAbort(AAIAction* inAction)
+{
+	ResetCommandManager();
+}
+
+void ACommandManager::StopAction()
+{
+	if (CurrentAction)
+	{
+		CurrentAction->ActionAbort();
+	}
 }
 
 void ACommandManager::AddAction(TSubclassOf<AAIAction> inActionClass)
@@ -136,5 +155,11 @@ void ACommandManager::GC_Actions()
 			tAction->Destroy();
 		}
 	}
+}
+
+void ACommandManager::ResetCommandManager()
+{
+	CurrentActionIndex = 0;
+	CurrentAction = nullptr;
 }
 

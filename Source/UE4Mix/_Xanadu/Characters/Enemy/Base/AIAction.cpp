@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "AIAction.h"
@@ -89,6 +89,8 @@ void AAIAction::SetActionState(EActionState inState)
 	case EActionState::Fail:
 		ActionFail();
 		break;
+	case EActionState::Abort:
+		break;
 	default:
 		break;
 	}
@@ -157,6 +159,15 @@ void AAIAction::OnCommandFail(AAICommand* inCommand)
 	else
 	{
 		SetActionState(EActionState::Fail);
+	}
+}
+
+void AAIAction::ActionAbort()
+{
+	SetActionState(EActionState::Abort);
+	if (CommandManager)
+	{
+		CommandManager->OnActionAbort(this);
 	}
 }
 

@@ -54,7 +54,15 @@ public:
 
 	void OnActionFail(AAIAction* inAction);
 
+	void OnActionAbort(AAIAction* inAction);
+
+	// 停止所有Action,如丢失玩家或死亡时调用
+	void StopAction();
+
 protected:
+	// 是否已经设置Action数组,防止每次开启命令时,重复设置
+	bool bHasSetActionArr;
+
 	// 创建指定类型的Action,加到ActionArr中
 	void AddAction(TSubclassOf<AAIAction> inActionClass);
 
@@ -63,5 +71,8 @@ protected:
 
 	// 对所有的Action进行垃圾回收
 	void GC_Actions();
+
+	// 重置所有Action状态,并不删除Action
+	void ResetCommandManager();
 
 };

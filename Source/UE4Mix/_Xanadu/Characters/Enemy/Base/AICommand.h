@@ -81,7 +81,6 @@ T* AAICommand::GetCharacter()
 {
 	if (OwnerController)
 	{
-		//return Cast<T>(OwnerController->GetCharacter());
 		return OwnerController->GetCharacter<T>();
 	}
 	return nullptr;
