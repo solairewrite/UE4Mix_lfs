@@ -3,31 +3,32 @@
 
 #include "XanaduHUD.h"
 #include "Engine/Canvas.h"
+#include "ConstructorHelpers.h"
+#include "_Xanadu/Base/HUD/XanaduUserWidget.h"
 
 AXanaduHUD::AXanaduHUD()
 {
-	AvatarSize = 70.0f;
-	PlayerName = TEXT("骑士");
+	if (!GEngine || !GEngine->GameViewport)
+	{
+		return;
+	}
+
+	// 在编辑器中选中资源Ctrl+C可复制路径,前面有类型名,后面要加"_C"
+	static ConstructorHelpers::FClassFinder<UUserWidget> tWidget(
+		TEXT("WidgetBlueprint'/Game/_MyProjects/_Xanadu/Characters/Player/Knight/HUD/WBP_Knight.WBP_Knight_C'"));
+	if (tWidget.Succeeded())
+	{
+		WidgetClass = tWidget.Class;
+
+		UserWidget = CreateWidget<UXanaduUserWidget>(GetWorld()->GetGameInstance(), WidgetClass);
+		if (UserWidget)
+		{
+			UserWidget->AddToViewport();
+		}
+	}
 }
 
 void AXanaduHUD::DrawHUD()
 {
 	Super::DrawHUD();
-
-	DrawAvatar();
-}
-
-void AXanaduHUD::DrawAvatar()
-{
-	const float tMargin = 20.0f;
-
-	if (AvatarTex)
-	{
-		const float tScale = AvatarSize / AvatarTex->GetSurfaceHeight();
-		DrawTextureSimple(AvatarTex, Canvas->ClipX - AvatarSize - tMargin, tMargin, tScale);
-	}
-
-	float tNameStartX = Canvas->ClipX - AvatarSize - tMargin;
-	float tNameStartY = tMargin + AvatarSize + 0.5 * tMargin;
-	DrawText(PlayerName.ToString(), FColor::Yellow, tNameStartX, tNameStartY, nullptr);
 }

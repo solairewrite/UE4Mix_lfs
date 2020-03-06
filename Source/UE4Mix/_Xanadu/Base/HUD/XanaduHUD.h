@@ -21,13 +21,8 @@ public:
 	virtual void DrawHUD() override;
 
 protected:
-	// 头像
-	UPROPERTY(EditDefaultsOnly, Category = "XanaduHUD")
-		UTexture* AvatarTex;
-	UPROPERTY(EditDefaultsOnly, Category = "XanaduHUD")
-		float AvatarSize;
-	UPROPERTY(EditDefaultsOnly, Category = "XanaduHUD")
-		FName PlayerName;
-
-	void DrawAvatar();
+	// 主要的UI
+	class UXanaduUserWidget* UserWidget;
+	// 蓝图Widget类
+	TSubclassOf<class UXanaduUserWidget> WidgetClass;
 };
