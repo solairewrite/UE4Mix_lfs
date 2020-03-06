@@ -100,8 +100,7 @@ void APlayerCharacter_Knight::DoMeleeDamage(float inDamage, bool bAddImpulse /*=
 		}
 
 		IIHealth* tHealthActor = Cast<IIHealth>(tActor);
-		//if (tActor->GetClass()->ImplementsInterface(UIHealth::StaticClass()))
-		if (tHealthActor && tHealthActor->GetHealth() > 0)
+		if (tHealthActor && IIHealth::Execute_GetHealth(tActor) > 0)
 		{
 			tActor->TakeDamage(inDamage, FDamageEvent(), GetController(), this);
 
@@ -123,8 +122,7 @@ void APlayerCharacter_Knight::DoMeleeDamage(float inDamage, bool bAddImpulse /*=
 			if (CVARDebugLevel.GetValueOnGameThread() > 0)
 			{
 				FString tName = GetDebugName(tActor);
-				//float health = IIHealth::Execute_GetHealth(tActor);
-				float health = Cast<IIHealth>(tActor)->GetHealth();
+				float health = IIHealth::Execute_GetHealth(tActor);
 				FString tInfo = FString::Printf(TEXT("%s 血量: %s"), *tName, *FString::SanitizeFloat(health, 0));
 				GEngine->AddOnScreenDebugMessage(1, 3.0f, FColor::Yellow, tInfo);
 			}

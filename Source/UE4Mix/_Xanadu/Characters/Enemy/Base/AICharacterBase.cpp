@@ -388,7 +388,7 @@ float AAICharacterBase::PlayAnim(FName inAnimName, bool bPlayImmediately /*= fal
 	return animLength;
 }
 
-float AAICharacterBase::GetHealth()
+float AAICharacterBase::GetHealth_Implementation()
 {
 	if (HealthComp)
 	{
@@ -398,15 +398,15 @@ float AAICharacterBase::GetHealth()
 	return 0.0f;
 }
 
-//float AAICharacterBase::GetHealth_Implementation()
-//{
-//	if (HealthComp)
-//	{
-//		return HealthComp->GetHealth();
-//	}
-//
-//	return 0.0f;
-//}
+float AAICharacterBase::GetHealthMax_Implementation()
+{
+	if (HealthComp)
+	{
+		return HealthComp->GetHealthMax();
+	}
+
+	return 0.0f;
+}
 
 bool AAICharacterBase::IsAI()
 {

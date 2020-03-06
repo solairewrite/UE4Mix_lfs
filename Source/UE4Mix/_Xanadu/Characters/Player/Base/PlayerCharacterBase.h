@@ -1,17 +1,20 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "_Xanadu/Characters/Base/Interfaces/IHealth.h"
 #include "PlayerCharacterBase.generated.h"
 
 class USpringArmComponent;
 class UCameraComponent;
 class UBoxComponent;
+class UHealthComponent;
 
 UCLASS()
-class UE4MIX_API APlayerCharacterBase : public ACharacter
+class UE4MIX_API APlayerCharacterBase : public ACharacter,
+	public IIHealth
 {
 	GENERATED_BODY()
 
@@ -64,4 +67,13 @@ protected:
 	// 按下鼠标左键触发近战命令
 	virtual void Melee();
 	void OnMeleeMontageFinish();
+
+protected:
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+		UHealthComponent* HealthComp;
+
+	// 血量接口
+public:
+	virtual float GetHealth_Implementation() override;
+	virtual float GetHealthMax_Implementation() override;
 };

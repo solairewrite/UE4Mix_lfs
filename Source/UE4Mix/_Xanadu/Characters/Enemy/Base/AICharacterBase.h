@@ -129,8 +129,8 @@ public:
 	float PlayAnim(FName inAnimName, bool bPlayImmediately = false);
 
 	// 血量接口
-	//virtual float GetHealth_Implementation() override;
-	virtual float GetHealth() override;
+	virtual float GetHealth_Implementation() override;
+	virtual float GetHealthMax_Implementation() override;
 
 	virtual bool IsAI() override;
 

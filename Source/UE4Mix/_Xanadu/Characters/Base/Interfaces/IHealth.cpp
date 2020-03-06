@@ -3,14 +3,12 @@
 
 #include "IHealth.h"
 
-// Add default functionality here for any IIHealth functions that are not pure virtual.
+float IIHealth::GetHealth_Implementation()
+{
+	return 0;
+}
 
-//float IIHealth::GetHealth_Implementation()
-//{
-//	return 0;
-//}
-
-float IIHealth::GetHealth()
+float IIHealth::GetHealthMax_Implementation()
 {
 	return 0;
 }

@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "PlayerCharacterBase.h"
@@ -11,6 +11,7 @@
 #include "Components/BoxComponent.h"
 #include "../../Enemy/Base/AICharacterBase.h"
 #include "_Xanadu/Characters/Base/Interfaces/IHealth.h"
+#include "_Xanadu/Characters/Base/Components/HealthComponent.h"
 
 // Sets default values
 APlayerCharacterBase::APlayerCharacterBase()
@@ -51,6 +52,14 @@ APlayerCharacterBase::APlayerCharacterBase()
 
 	// 伤害
 	MeleeDamage = 10.0f;
+
+	// 血量组件
+	HealthComp = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComp"));
+	if (HealthComp)
+	{
+		// 绑定代理函数,当调用OnTakeAnyDamage.Broadcast时,会触发代理函数
+		OnTakeAnyDamage.AddDynamic(HealthComp, &UHealthComponent::OnTakeDamage);
+	}
 }
 
 // Called when the game starts or when spawned
@@ -186,5 +195,25 @@ void APlayerCharacterBase::OnMelee()
 void APlayerCharacterBase::OnMeleeMontageFinish()
 {
 	bIsMeleeing = false;
+}
+
+float APlayerCharacterBase::GetHealth_Implementation()
+{
+	if (HealthComp)
+	{
+		return HealthComp->GetHealth();
+	}
+
+	return 0.0f;
+}
+
+float APlayerCharacterBase::GetHealthMax_Implementation()
+{
+	if (HealthComp)
+	{
+		return HealthComp->GetHealthMax();
+	}
+
+	return 0.0f;
 }
 
