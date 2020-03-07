@@ -1,7 +1,11 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "XanaduTools.h"
+#include "_Xanadu/Base/XanaduTypes.h"
+#include "Engine.h"
+
+extern TAutoConsoleVariable<int32> CVARDebugLevel;
 
 XanaduTools::XanaduTools()
 {
@@ -9,6 +13,19 @@ XanaduTools::XanaduTools()
 
 XanaduTools::~XanaduTools()
 {
+}
+
+void XanaduTools::LogScreen(const FString& inStr, int8 DebugLevel /*= 1*/, uint64 Key /*= 1*/, FColor DisplayColor /*= FColor::Yellow*/, float TimeToDisplay /*= 2.0f*/)
+{
+	if (CVARDebugLevel.GetValueOnGameThread() < DebugLevel)
+	{
+		return;
+	}
+	if (!GEngine)
+	{
+		return;
+	}
+	GEngine->AddOnScreenDebugMessage(Key, TimeToDisplay, DisplayColor, inStr);
 }
 
 FString XanaduTools::EAIStateToString(EAIState inState)

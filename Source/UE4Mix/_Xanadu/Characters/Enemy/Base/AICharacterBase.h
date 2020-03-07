@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -187,4 +187,12 @@ public:
 	FVector GetRandomPatrolLoc();
 	void StartPartol();
 	void PatrolFinish();
+
+protected:
+	// 血条
+	UPROPERTY(VisibleAnywhere, Category = "HealthBar")
+		class UWidgetComponent* WidgetComp;
+
+	void CreateWidgetComp();
+	void InitWidgetComp();
 };

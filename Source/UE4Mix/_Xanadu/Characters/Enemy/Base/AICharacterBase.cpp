@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "AICharacterBase.h"
@@ -17,6 +17,8 @@
 #include "Engine/TargetPoint.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "_Xanadu/Characters/Player/Base/PlayerCharacterBase.h"
+#include "Components/WidgetComponent.h"
+#include "_Xanadu/Characters/Enemy/Base/HUD/AIHealthBarWidget.h"
 
 // 引用已经创建的控制台变量,需要#include".h"
 extern TAutoConsoleVariable<int32> CVARDebugLevel;
@@ -55,6 +57,9 @@ AAICharacterBase::AAICharacterBase()
 		// 绑定代理函数,当调用OnTakeAnyDamage.Broadcast时,会触发代理函数
 		OnTakeAnyDamage.AddDynamic(HealthComp, &UHealthComponent::OnTakeDamage);
 	}
+
+	// 血条
+	CreateWidgetComp();
 }
 
 // Called when the game starts or when spawned
@@ -63,6 +68,8 @@ void AAICharacterBase::BeginPlay()
 	Super::BeginPlay();
 
 	GetCharacterMovement()->MaxWalkSpeed = MaxWalkSpeed;
+
+	InitWidgetComp();
 }
 
 // Called every frame
@@ -427,6 +434,11 @@ void AAICharacterBase::OnDead()
 	bDead = true;
 	float tAnimLength = PlayAnim("Death");
 	SetLifeSpan(tAnimLength + 1.0f);
+
+	if (WidgetComp)
+	{
+		WidgetComp->SetVisibility(false);
+	}
 }
 
 void AAICharacterBase::OnDeathAnimEnd()
@@ -561,6 +573,32 @@ void AAICharacterBase::PatrolFinish()
 	if (controller)
 	{
 		controller->FinishPatrol();
+	}
+}
+
+void AAICharacterBase::CreateWidgetComp()
+{
+	WidgetComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("WidgetComp"));
+	// 在构造函数中设置Socket
+	WidgetComp->SetupAttachment(GetMesh(), TEXT("HealthBarSocket"));
+	WidgetComp->SetWidgetSpace(EWidgetSpace::Screen); // 设置血条UI面向摄像机
+	WidgetComp->SetDrawSize(FVector2D(150.0f, 20.0f));
+
+	// 设置UI组件显示的UserWidget
+	UClass* WidgetClass = LoadClass<UUserWidget>(NULL,
+		TEXT("WidgetBlueprint'/Game/_MyProjects/_Xanadu/Characters/Enemy/Base/HUD/WBP_AIHealthBar.WBP_AIHealthBar_C'"));
+	if (WidgetClass)
+	{
+		WidgetComp->SetWidgetClass(WidgetClass);
+	}
+}
+
+void AAICharacterBase::InitWidgetComp()
+{
+	UAIHealthBarWidget* tHealthBarWidget = Cast<UAIHealthBarWidget>(WidgetComp->GetUserWidgetObject());
+	if (tHealthBarWidget)
+	{
+		tHealthBarWidget->SetAICharacter(this);
 	}
 }
 
