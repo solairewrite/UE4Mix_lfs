@@ -22,7 +22,8 @@ UE4开发技能合集
 | DynamicCombatSystem | 复制Content | 简单的对战,可以释放魔法 |
 | Paragon: Greystone | 添加到工程 | 主角 |
 | Animal Variety Pack | 添加到工程 | 动物 |
-
+| Open World AI Spawn System | 添加到工程 | 生成AI |
+| Craft Resources Icons | 添加到工程 | Icon |
 
 
 ***
