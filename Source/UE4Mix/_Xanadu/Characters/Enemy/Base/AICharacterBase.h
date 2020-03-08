@@ -175,6 +175,12 @@ protected:
 	void TickPatrol();
 	bool bPatroling;
 
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+		class UBoxComponent* MeleeBoxComp;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+		float MeleeDamage;
+
 public:
 	EAIState GetAIState();
 	void SetAIState(EAIState inNewState);

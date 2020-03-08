@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "PlayerCharacterBase.h"
@@ -12,6 +12,7 @@
 #include "../../Enemy/Base/AICharacterBase.h"
 #include "_Xanadu/Characters/Base/Interfaces/IHealth.h"
 #include "_Xanadu/Characters/Base/Components/HealthComponent.h"
+#include "PlayerControllerBase.h"
 
 // Sets default values
 APlayerCharacterBase::APlayerCharacterBase()
@@ -67,6 +68,7 @@ void APlayerCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
 
+	bDead = false;
 }
 
 void APlayerCharacterBase::Destroyed()
@@ -215,5 +217,12 @@ float APlayerCharacterBase::GetHealthMax_Implementation()
 	}
 
 	return 0.0f;
+}
+
+void APlayerCharacterBase::OnDead()
+{
+	bDead = true;
+
+	DisableInput(GetController<APlayerControllerBase>());
 }
 

@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "AIControllerBase.h"
@@ -365,7 +365,7 @@ void AAIControllerBase::TimerAIPerception()
 		for (AActor* tActor : tSensedActors)
 		{
 			APlayerCharacterBase* tCharacter = Cast<APlayerCharacterBase>(tActor);
-			if (tCharacter)
+			if (tCharacter && IIHealth::Execute_GetHealth(tCharacter) > 0.0f)
 			{
 				FindAttackTarget(tCharacter);
 				return;
@@ -382,6 +382,12 @@ void AAIControllerBase::TimerAIPerception()
 			LoseAttackTarget();
 			return;
 		}
+	}
+
+	if (AIState == EAIState::Attack && AttackTarget &&
+		IIHealth::Execute_GetHealth(AttackTarget) <= 0.0f)
+	{
+		LoseAttackTarget();
 	}
 }
 

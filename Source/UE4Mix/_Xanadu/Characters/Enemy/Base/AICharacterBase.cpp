@@ -19,6 +19,7 @@
 #include "_Xanadu/Characters/Player/Base/PlayerCharacterBase.h"
 #include "Components/WidgetComponent.h"
 #include "_Xanadu/Characters/Enemy/Base/HUD/AIHealthBarWidget.h"
+#include "Components/BoxComponent.h"
 
 // 引用已经创建的控制台变量,需要#include".h"
 extern TAutoConsoleVariable<int32> CVARDebugLevel;
@@ -41,6 +42,18 @@ AAICharacterBase::AAICharacterBase()
 
 	// 攻击
 	MeleeRange = 250.0f;
+	MeleeDamage = 10.0f;
+
+	MeleeBoxComp = CreateDefaultSubobject<UBoxComponent>(TEXT("MeleeBoxComp"));
+	MeleeBoxComp->SetRelativeLocation(FVector(110.0f, 0, 0));
+	MeleeBoxComp->SetRelativeScale3D(FVector(3.75f, 4.5f, 2.0f));
+	// 设置碰撞
+	MeleeBoxComp->SetCollisionObjectType(ECC_Pawn);
+	MeleeBoxComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	MeleeBoxComp->SetCollisionResponseToAllChannels(ECR_Ignore);
+	MeleeBoxComp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+	MeleeBoxComp->SetCollisionResponseToChannel(ECC_Destructible, ECR_Overlap);
+	MeleeBoxComp->SetupAttachment(RootComponent);
 
 	// AIState
 	IdleTimeRangeMin = 1.0f;
@@ -453,7 +466,25 @@ void AAICharacterBase::OnDeathAnimEnd()
 
 void AAICharacterBase::OnMelee()
 {
+	if (!MeleeBoxComp || MeleeDamage <= 0.0f)
+	{
+		return;
+	}
 
+	TArray<AActor*> tActorArr;
+	MeleeBoxComp->GetOverlappingActors(tActorArr);
+	for (AActor* tActor : tActorArr)
+	{
+		APlayerCharacterBase* tPlayer = Cast<APlayerCharacterBase>(tActor);
+		if (tPlayer)
+		{
+			if (IIHealth::Execute_GetHealth(tPlayer) > 0)
+			{
+				tPlayer->TakeDamage(MeleeDamage, FDamageEvent(), GetController(), this);
+			}
+			return;
+		}
+	}
 }
 
 bool AAICharacterBase::CanPlayTakeHitAnim()

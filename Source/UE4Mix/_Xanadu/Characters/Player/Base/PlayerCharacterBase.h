@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -53,6 +53,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Damage")
 		float MeleeDamage;
 
+	UPROPERTY(BlueprintReadOnly, Category = "Player")
+		bool bDead;
+
 public:
 	void MoveForward(float inValue);
 	void MoveRight(float inValue);
@@ -76,4 +79,6 @@ protected:
 public:
 	virtual float GetHealth_Implementation() override;
 	virtual float GetHealthMax_Implementation() override;
+
+	virtual void OnDead() override;
 };
