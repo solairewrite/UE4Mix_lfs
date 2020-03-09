@@ -1,9 +1,11 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "SingleAISpawnManager.h"
 #include "_Xanadu/Characters/Enemy/Fox/AICharacter_Fox.h"
 #include "TimerManager.h"
+#include "Engine/World.h"
+#include "_Xanadu/Characters/Base/Interfaces/IHealth.h"
 
 ASingleAISpawnManager::ASingleAISpawnManager()
 {
@@ -12,15 +14,25 @@ ASingleAISpawnManager::ASingleAISpawnManager()
 
 void ASingleAISpawnManager::CheckSpawnAI()
 {
-	if (!IsCanSpawnAI())
-	{
-		return;
-	}
+	Super::CheckSpawnAI();
+}
 
-	AISpawned = SpawnAAI(AIClass, GetActorLocation());
-	if (AISpawned)
+void ASingleAISpawnManager::SpawnAI()
+{
+	AISpawned = SpawnAAI(AIClass, GetActorLocation(), GetActorRotation());
+	LastSpawnAITime = GetWorld()->TimeSeconds;
+
+	if (AISpawned->CanPatrol())
 	{
-		bHasSpawnAI = true;
-		GetWorldTimerManager().ClearTimer(TH_CheckSpawnAI);
+		AISpawned->SetPatrolPointArr(PatrolPointArr);
+	}
+}
+
+void ASingleAISpawnManager::ClearDeadAI()
+{
+	if (!AISpawned || IIHealth::Execute_GetHealth(AISpawned) <= 0)
+	{
+		AISpawned = nullptr;
+		CurrentAICount = 0;
 	}
 }

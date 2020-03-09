@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -13,7 +13,7 @@ class APlayerCharacterBase;
 class UNavigationPath;
 class AAICommand;
 class UHealthComponent;
-class ATargetPoint;
+class APatrolPoint;
 
 UCLASS()
 class UE4MIX_API AAICharacterBase : public ACharacter,
@@ -169,7 +169,7 @@ protected:
 		bool bFixdPatrolPoint;
 	// 如果使用固定巡逻点,巡逻点的引用数组
 	UPROPERTY(EditAnywhere, Category = "AIState")
-		TArray<ATargetPoint*> PatrolPointArr;
+		TArray<APatrolPoint*> PatrolPointArr;
 	FVector CurrPatrolLoc; // 当前巡逻点位置
 
 	void TickPatrol();
@@ -193,6 +193,8 @@ public:
 	FVector GetRandomPatrolLoc();
 	void StartPartol();
 	void PatrolFinish();
+
+	void SetPatrolPointArr(TArray<APatrolPoint*> inPatrolPointArr);
 
 protected:
 	// 血条

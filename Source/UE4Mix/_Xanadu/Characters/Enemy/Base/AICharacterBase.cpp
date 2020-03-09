@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "AICharacterBase.h"
@@ -14,12 +14,12 @@
 #include "Animation/AnimInstance.h"
 #include "_Xanadu/Characters/Base/Components/HealthComponent.h"
 #include "_Xanadu/Base/XanaduTypes.h"
-#include "Engine/TargetPoint.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "_Xanadu/Characters/Player/Base/PlayerCharacterBase.h"
 #include "Components/WidgetComponent.h"
 #include "_Xanadu/Characters/Enemy/Base/HUD/AIHealthBarWidget.h"
 #include "Components/BoxComponent.h"
+#include "_Xanadu/Base/SpawnAI/PatrolPoint.h"
 
 // 引用已经创建的控制台变量,需要#include".h"
 extern TAutoConsoleVariable<int32> CVARDebugLevel;
@@ -29,6 +29,9 @@ AAICharacterBase::AAICharacterBase()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	// 自动生成Controller
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
 	// 运动
 	MaxWalkSpeed = 300.0f;
@@ -511,6 +514,12 @@ void AAICharacterBase::TakeImpulse(FVector inImpulseVector)
 	LaunchCharacter(inImpulseVector, false, false);
 }
 
+void AAICharacterBase::SetPatrolPointArr(TArray<APatrolPoint*> inPatrolPointArr)
+{
+	PatrolPointArr.Empty();
+	PatrolPointArr = inPatrolPointArr;
+}
+
 void AAICharacterBase::TickPatrol()
 {
 	float tDis = UKismetMathLibrary::Vector_Distance2D(GetActorLocation(), CurrPatrolLoc);
@@ -555,7 +564,7 @@ FVector AAICharacterBase::GetRandomPatrolLoc()
 	if (bFixdPatrolPoint)
 	{
 		TArray<FVector> tLocArr;
-		for (ATargetPoint* tPoint : PatrolPointArr)
+		for (APatrolPoint* tPoint : PatrolPointArr)
 		{
 			FVector tLoc = tPoint->GetActorLocation();
 			if (tLoc != CurrPatrolLoc)
