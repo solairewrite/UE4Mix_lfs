@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -10,8 +10,8 @@ UCLASS()
 class UE4MIX_API APatrolPoint : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	APatrolPoint();
 
@@ -22,4 +22,12 @@ protected:
 protected:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 		class UStaticMeshComponent* Point_Visualizer;
+
+	// 显示两个路径点之间的路径
+	// .build.cs中添加"CableComponent"
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+		class UCableComponent* Path_Visualizer;
+
+	UPROPERTY(EditInstanceOnly, Category = "Path")
+		APatrolPoint* NextPoint;
 };

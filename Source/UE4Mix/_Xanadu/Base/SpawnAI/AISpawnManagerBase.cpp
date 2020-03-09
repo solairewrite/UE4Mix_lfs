@@ -57,7 +57,7 @@ void AAISpawnManagerBase::Tick(float DeltaTime)
 
 void AAISpawnManagerBase::CheckSpawnAI()
 {
-	// Ïú»ÙAI
+	// é”€æ¯AI
 	float tDis = GetDistanceToPlayer();
 	if (tDis > KillAIRadius)
 	{
@@ -66,7 +66,7 @@ void AAISpawnManagerBase::CheckSpawnAI()
 
 	ClearDeadAI();
 
-	//// ¼ì²âAIËÀÍö
+	//// ï¿½ï¿½ï¿½AIï¿½ï¿½ï¿½ï¿½
 	//for (int i = CurrentAIArr.Num() - 1; i > 0; i--)
 	//{
 	//	AAICharacterBase* tAI = CurrentAIArr[i];
@@ -97,9 +97,8 @@ bool AAISpawnManagerBase::IsCanSpawnAI()
 		return false;
 	}
 
-	// Ïú»ÙAI
+	// æ£€æµ‹ç©å®¶æ˜¯å¦è¿›å…¥å¯ä»¥ç”ŸæˆAIçš„åŒºåŸŸ
 	float tDis = GetDistanceToPlayer();
-	// Íæ¼Ò²»´æÔÚ
 	if (tDis < 0 || tDis > SpawnAIRadius)
 	{
 		return false;

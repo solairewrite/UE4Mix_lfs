@@ -226,16 +226,17 @@ void AAIControllerBase::StartIdle()
 
 void AAIControllerBase::OnEnterIdleState()
 {
+	float tIdleTime = 0.1f;
 	AAICharacterBase* character = GetCharacter<AAICharacterBase>();
-	if (!character)
+	// 动态Spawn出来的AI,在第一帧获取不到character,不能直接返回,否则会导致后面的寻路失败
+	if (character)
 	{
-		return;
+		float tMin = character->GetIdleTimeRangeMin();
+		float tMax = character->GetIdleTimeRangeMax();
+		tMin = FMath::Max(0.1f, tMin);
+		tMax = FMath::Max(tMin, tMax);
+		tIdleTime = UKismetMathLibrary::RandomFloatInRange(tMin, tMax);
 	}
-	float tMin = character->GetIdleTimeRangeMin();
-	float tMax = character->GetIdleTimeRangeMax();
-	tMin = FMath::Max(0.1f, tMin);
-	tMax = FMath::Max(tMin, tMax);
-	float tIdleTime = UKismetMathLibrary::RandomFloatInRange(tMin, tMax);
 	// 定时结束Idle状态
 	GetWorldTimerManager().SetTimer(TH_FinishIdle, this, &AAIControllerBase::FinishIdle, tIdleTime, false);
 }

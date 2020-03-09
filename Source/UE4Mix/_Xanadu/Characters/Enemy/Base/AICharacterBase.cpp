@@ -523,10 +523,10 @@ void AAICharacterBase::SetPatrolPointArr(TArray<APatrolPoint*> inPatrolPointArr)
 void AAICharacterBase::TickPatrol()
 {
 	float tDis = UKismetMathLibrary::Vector_Distance2D(GetActorLocation(), CurrPatrolLoc);
-	if (tDis < 50.0f)
+	// 发现距离在87就停止了
+	if (tDis < 100.0f)
 	{
-		AAIControllerBase* controller = GetController<AAIControllerBase>();
-		if (controller)
+		AAIControllerBase* controller = GetController<AAIControllerBase>();		if (controller)
 		{
 			controller->StopMovement();
 			PatrolFinish();

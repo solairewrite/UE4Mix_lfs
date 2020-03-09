@@ -10,7 +10,7 @@ public class UE4Mix : ModuleRules
 
         PublicDependencyModuleNames.AddRange(new string[] {
             "Core", "CoreUObject", "Engine", "InputCore",
-            "AIModule","NavigationSystem"
+            "AIModule", "NavigationSystem", "CableComponent"
         });
 
         PrivateDependencyModuleNames.AddRange(new string[] { });
