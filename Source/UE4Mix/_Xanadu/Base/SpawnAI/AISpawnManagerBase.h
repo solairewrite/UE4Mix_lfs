@@ -48,8 +48,6 @@ protected:
 
 	float LastSpawnAITime;
 
-	//TArray<class AAICharacterBase*> CurrentAIArr;
-
 	// 玩家进入多少范围内,SpawnAI
 	UPROPERTY(EditAnywhere, Category = "SpawnAI")
 		float SpawnAIRadius;
@@ -64,7 +62,7 @@ protected:
 protected:
 	FTimerHandle TH_CheckSpawnAI;
 	// 定时检测是否可以生成AI,如果可以则生成
-	virtual void CheckSpawnAI();
+	void CheckSpawnAI();
 
 	virtual bool IsCanSpawnAI();
 
@@ -73,7 +71,7 @@ protected:
 
 	virtual AAICharacterBase* SpawnAAI(TSubclassOf<AAICharacterBase> inAIClass, FVector inSpawnLoc, FRotator inSpawnRot = FRotator::ZeroRotator);
 
-	void DestroyAllAI();
+	virtual void DestroyAllAI();
 
 	float GetDistanceToPlayer();
 

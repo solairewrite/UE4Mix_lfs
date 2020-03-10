@@ -27,9 +27,9 @@ protected:
 	class AAICharacterBase* AISpawned;
 
 protected:
-	virtual void CheckSpawnAI() override;
-
 	virtual void SpawnAI() override;
 
 	virtual void ClearDeadAI() override;
+
+	virtual void DestroyAllAI() override;
 };

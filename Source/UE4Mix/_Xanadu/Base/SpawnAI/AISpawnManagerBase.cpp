@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "AISpawnManagerBase.h"
@@ -64,18 +64,8 @@ void AAISpawnManagerBase::CheckSpawnAI()
 		DestroyAllAI();
 	}
 
+	// 清除对死亡AI的引用
 	ClearDeadAI();
-
-	//// ���AI����
-	//for (int i = CurrentAIArr.Num() - 1; i > 0; i--)
-	//{
-	//	AAICharacterBase* tAI = CurrentAIArr[i];
-	//	if (!tAI || tAI->GetHealth() <= 0.0f)
-	//	{
-	//		CurrentAIArr.RemoveAt(i);
-	//	}
-	//}
-	//CurrentAICount = CurrentAIArr.Num();
 
 	if (!IsCanSpawnAI())
 	{
@@ -122,7 +112,6 @@ AAICharacterBase* AAISpawnManagerBase::SpawnAAI(TSubclassOf<AAICharacterBase> in
 	{
 		CurrentAICount++;
 		AllSpawnedAICount++;
-		//CurrentAIArr.Add(tAI);
 	}
 
 	return tAI;
@@ -130,11 +119,6 @@ AAICharacterBase* AAISpawnManagerBase::SpawnAAI(TSubclassOf<AAICharacterBase> in
 
 void AAISpawnManagerBase::DestroyAllAI()
 {
-	//for (AAICharacterBase* tAI : CurrentAIArr)
-	//{
-	//	tAI->Destroy();
-	//}
-	//CurrentAIArr.Empty();
 	CurrentAICount = 0;
 }
 

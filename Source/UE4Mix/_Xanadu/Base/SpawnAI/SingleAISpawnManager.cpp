@@ -12,11 +12,6 @@ ASingleAISpawnManager::ASingleAISpawnManager()
 	AIClass = AAICharacter_Fox::StaticClass();
 }
 
-void ASingleAISpawnManager::CheckSpawnAI()
-{
-	Super::CheckSpawnAI();
-}
-
 void ASingleAISpawnManager::SpawnAI()
 {
 	AISpawned = SpawnAAI(AIClass, GetActorLocation(), GetActorRotation());
@@ -34,5 +29,13 @@ void ASingleAISpawnManager::ClearDeadAI()
 	{
 		AISpawned = nullptr;
 		CurrentAICount = 0;
+	}
+}
+
+void ASingleAISpawnManager::DestroyAllAI()
+{
+	if (AISpawned)
+	{
+		AISpawned->Destroy();
 	}
 }
