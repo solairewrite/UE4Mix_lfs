@@ -71,6 +71,9 @@ C:\Windows\Fonts\新宋体 常规,在编辑器内拖到 Content/_MyProjects/Font
 
 
 ## Git
++ git bash 总是推送失败  
+使用 cmd  
+
 + 只拉取最近一次的提交  
 `git pull --depth=1 --allow-unrelated-histories`  
 + 远端仓库回滚
