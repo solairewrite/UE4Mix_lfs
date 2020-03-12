@@ -24,6 +24,14 @@ public:
 	// Sets default values for this actor's properties
 	ADoor();
 
+#if WITH_EDITOR
+	// 编辑器内修改属性时,即时更新相关属性
+	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+#endif
+
+protected:
+	virtual void BeginPlay() override;
+
 protected:
 	// 开关门触发器
 	UPROPERTY(VisibleAnywhere, Category = "Components")
@@ -43,12 +51,19 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 		UBoxComponent* UnLoadBackMapTrigger;
 
-	// 开门时是否加载地图
+	// 开门时是否加载门前侧地图
 	UPROPERTY(EditAnywhere, Category = "Door")
-		bool bLoadLevelOnOpenDoor;
-	// 关门时是否卸载地图
+		bool bLoadFrontLevel;
+	// 关门时是否卸载门前侧地图
 	UPROPERTY(EditAnywhere, Category = "Door")
-		bool bUnLoadLevelOnCloseDoor;
+		bool bUnLoadFrontLevel;
+
+	// 开门时是否加载门后侧地图
+	UPROPERTY(EditAnywhere, Category = "Door")
+		bool bLoadBackLevel;
+	// 关门时是否卸载门后侧地图
+	UPROPERTY(EditAnywhere, Category = "Door")
+		bool bUnLoadBackLevel;
 
 	// 门前侧的地图名称
 	UPROPERTY(EditInstanceOnly, Category = "Door")
@@ -58,7 +73,7 @@ protected:
 	UPROPERTY(EditInstanceOnly, Category = "Door")
 		FName BackMapName;
 
-	// 开门代理
+	// 开门代理,蓝图可绑定或解绑
 	UPROPERTY(BlueprintAssignable, Category = "Door")
 		FOpenDoorSignature OnDoorOpenedDelegate;
 	// 关门代理
@@ -78,4 +93,27 @@ protected:
 	// 门被关闭的回调函数,蓝图中调用,触发开门代理
 	UFUNCTION(BlueprintCallable, Category = "Door")
 		void OnDoorClosed();
+
+	void CreateTriggers();
+
+	// 初始化盒体碰撞属性
+	void InitTrigger(UBoxComponent* inTrigger, FVector inRelativeLoc, FColor inColor);
+
+	// 修改是否加载/卸载地图时,显示/隐藏触发器线框
+	void OnChangeLoadMapProperties();
+
+	// 将开关门的事件添加到进入触发器代理
+	void AddLoadMapDelegates();
+
+	UFUNCTION()
+		void OnEnterOpenDoorTrigger(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+		void OnLeaveOpenDoorTrigger(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	UFUNCTION()
+		void OnEnterLoadFrontMapTrigger(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+		void OnEnterUnLoadFrontMapTrigger(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 };

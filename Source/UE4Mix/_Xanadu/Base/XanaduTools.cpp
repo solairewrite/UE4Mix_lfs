@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "XanaduTools.h"
@@ -15,7 +15,7 @@ XanaduTools::~XanaduTools()
 {
 }
 
-void XanaduTools::LogScreen(const FString& inStr, int8 DebugLevel /*= 1*/, uint64 Key /*= 1*/, FColor DisplayColor /*= FColor::Yellow*/, float TimeToDisplay /*= 2.0f*/)
+void XanaduTools::LogScreen(const FString& inStr, int8 DebugLevel /*= 1*/, uint64 Key /*= -1*/, FColor DisplayColor /*= FColor::Yellow*/, float TimeToDisplay /*= 2.0f*/)
 {
 	if (CVARDebugLevel.GetValueOnGameThread() < DebugLevel)
 	{
