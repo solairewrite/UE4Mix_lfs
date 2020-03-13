@@ -25,19 +25,20 @@ AAISpawnManagerBase::AAISpawnManagerBase()
 	KillAIRadius = 15000.0f;
 	AIWanderRadius = 500.0f;
 
-	IconBillboardComp = CreateDefaultSubobject<UBillboardComponent>(TEXT("IconBillboardComp"));
-	IconBillboardComp->SetupAttachment(RootComponent);
+	Icon = CreateDefaultSubobject<UBillboardComponent>(TEXT("IconBillboardComp"));
+	Icon->SetupAttachment(RootComponent);
 	UTexture2D* tIconTex = LoadObject<UTexture2D>(NULL, TEXT("Texture2D'/Game/Spawn_System/Textures/T_Icon_AI_Spawn.T_Icon_AI_Spawn'"));
 	if (tIconTex)
 	{
-		IconBillboardComp->SetSprite(tIconTex);
-		IconBillboardComp->ScreenSize = 0.0001f;
+		Icon->SetSprite(tIconTex);
+		Icon->ScreenSize = 0.0001f;
 	}
 
-	ShowSpawnRadiusSphereComp = CreateDefaultSubobject<USphereComponent>(TEXT("ShowSpawnRadiusSphereComp"));
-	ShowSpawnRadiusSphereComp->SetupAttachment(RootComponent);
-	ShowSpawnRadiusSphereComp->SetSphereRadius(SpawnAIRadius);
-	ShowSpawnRadiusSphereComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	SpawnSphere = CreateDefaultSubobject<USphereComponent>(TEXT("ShowSpawnRadiusSphereComp"));
+	SpawnSphere->SetupAttachment(RootComponent);
+	SpawnSphere->SetSphereRadius(SpawnAIRadius);
+	SpawnSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	SpawnSphere->SetHiddenInGame(true);
 }
 
 // Called when the game starts or when spawned

@@ -28,11 +28,11 @@ public:
 protected:
 	// 编辑器中显示的Icon
 	UPROPERTY(VisibleAnywhere, Category = "Components")
-		class UBillboardComponent* IconBillboardComp;
+		class UBillboardComponent* Icon;
 
 	// 显示生成范围的球体,并不进行碰撞检测
 	UPROPERTY(VisibleAnywhere, Category = "Components")
-		class USphereComponent* ShowSpawnRadiusSphereComp;
+		class USphereComponent* SpawnSphere;
 
 	UPROPERTY(EditAnywhere, Category = "SpawnAI")
 		int32 MaxSpawnAICount;
