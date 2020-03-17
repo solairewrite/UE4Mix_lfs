@@ -6,6 +6,19 @@
 #include "GameFramework/Actor.h"
 #include "LightManagerBase.generated.h"
 
+class ALightBase;
+
+// 一排灯
+USTRUCT()
+struct FLightRow
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditInstanceOnly, Category = "Light")
+		TArray<ALightBase*> LightArr;
+};
+
 /**
  * 光照管理器基类,控制灯光,火焰等的开关
  */
@@ -27,8 +40,9 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 protected:
+	// 一排排灯的数组
 	UPROPERTY(EditInstanceOnly, Category = "Light")
-		TArray<class ALightBase*> LightArr;
+		TArray<FLightRow> LightRowArr;
 
 	FTimerHandle TH_TurnOnLight;
 	// 打开两盏灯之间的时间间隔
@@ -39,8 +53,10 @@ protected:
 
 public:
 	// 依次打开光照数组里面的光照
-	void TurnOnLightsInTurn();
+	UFUNCTION(BlueprintCallable, Category = "Light")
+		void TurnOnLightsInTurn();
 
-	void TimerTurnOnALight();
+	UFUNCTION(BlueprintCallable, Category = "Light")
+		void TimerTurnOnALight();
 
 };

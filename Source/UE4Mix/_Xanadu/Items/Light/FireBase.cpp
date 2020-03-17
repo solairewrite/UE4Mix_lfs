@@ -15,14 +15,17 @@ AFireBase::AFireBase()
 	{
 		MeshComp->SetStaticMesh(tMesh);
 	}
+	SetRootComponent(MeshComp);
 
 	FirePSC = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("FirePSC"));
 	UParticleSystem* FireFX = LoadObject<UParticleSystem>(NULL,
 		TEXT("ParticleSystem'/Game/M5VFXVOL2/Particles/Fire/Fire_03.Fire_03'"));
+	FirePSC->bAutoActivate = false;
 	if (FireFX)
 	{
 		FirePSC->SetTemplate(FireFX);
 	}
+	FirePSC->SetupAttachment(RootComponent);
 }
 
 void AFireBase::TurnOnLight()
@@ -38,6 +41,10 @@ void AFireBase::TurnOffLight()
 void AFireBase::TurnOnFire()
 {
 	XanaduTools::LogScreen(FString::Printf(TEXT("点亮火焰: %s"), *GetDebugName(this)));
+	if (FirePSC)
+	{
+		FirePSC->ActivateSystem();
+	}
 }
 
 void AFireBase::TurnOffFire()

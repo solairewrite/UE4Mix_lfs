@@ -37,13 +37,17 @@ void ALightManagerBase::TurnOnLightsInTurn()
 
 void ALightManagerBase::TimerTurnOnALight()
 {
-	ALightBase* tLight;
-	if (LightArr.Num() > LightIndexToBeTurnOn &&
-		(tLight = LightArr[LightIndexToBeTurnOn]) != nullptr)
+	if (LightRowArr.Num() > LightIndexToBeTurnOn)
 	{
-		tLight->TurnOnLight();
+		for (ALightBase* tLight : LightRowArr[LightIndexToBeTurnOn].LightArr)
+		{
+			if (tLight)
+			{
+				tLight->TurnOnLight();
+			}
+		}
 		LightIndexToBeTurnOn++;
-		if (LightIndexToBeTurnOn >= LightArr.Num())
+		if (LightIndexToBeTurnOn >= LightRowArr.Num())
 		{
 			LightIndexToBeTurnOn = 0;
 			GetWorldTimerManager().ClearTimer(TH_TurnOnLight);
