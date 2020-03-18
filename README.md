@@ -74,6 +74,18 @@ C:\Windows\Fonts\新宋体 常规,在编辑器内拖到 Content/_MyProjects/Font
 + git bash 总是推送失败  
 使用 cmd  
 
++ 修改dns
+```
+# 修改 hosts 文件,路径
+# C:\Windows\System32\drivers\etc
+# github 加速的方法: 用下面的网站查询dns
+# http://tool.chinaz.com/dns?type=1&host=github.global.ssl.fastly.net&ip=
+# 设置dns后刷新
+# ipconfig /flushdns
+52.74.223.119 github.com
+69.171.246.9 github.global.ssl.fastly.net
+```
+
 + 只拉取最近一次的提交  
 `git pull --depth=1 --allow-unrelated-histories`  
 + 远端仓库回滚
